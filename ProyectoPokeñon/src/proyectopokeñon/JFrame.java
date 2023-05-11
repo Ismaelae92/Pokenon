@@ -4,37 +4,22 @@
  */
 package proyectopokeñon;
 
-import java.awt.BorderLayout;
-import java.awt.CardLayout;
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.List;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
-import java.util.HashSet;
-import java.util.Set;
+import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSlider;
-import javax.swing.JTabbedPane;
 import javax.swing.Timer;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 /**
  *
@@ -44,10 +29,14 @@ public class JFrame extends javax.swing.JFrame {
     
     private Clip clip;
     private AudioInputStream audioInputStream;
-    JComponent listas;
+    private BufferedImage image;
+    private int x, y;
+    private Timer timer;
+    private int moveAmount = 5;
     
     public JFrame(){
         initComponents();
+        contenedor.setEnabledAt(0, false);
         contenedor.setEnabledAt(1, false);
         contenedor.setEnabledAt(2, false);
         contenedor.setEnabledAt(3, false);
@@ -79,10 +68,39 @@ public class JFrame extends javax.swing.JFrame {
         } catch (IOException e) {
             System.out.println("err");
         }
-        
-        
+ 
+        try {
+            image = ImageIO.read(new File("src/mapa.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
    }
 
+    private void startMoving(int dx, int dy) {
+        stopMoving(); // Detener el movimiento actual si hay alguno en curso
+        timer = new Timer(10, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                moveButton(dx * moveAmount, dy * moveAmount);
+            }
+        });
+        timer.start();
+    }
+
+    private void stopMoving() {
+        if (timer != null) {
+            timer.stop();
+            timer = null;
+        }
+    }
+
+    private void moveButton(int dx, int dy) {
+        x = jButton3.getX() + dx;
+        y = jButton3.getY() + dy;
+
+        // Realizar el movimiento aquí, por ejemplo:
+        jButton3.setLocation(x, y);
+    }
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -119,9 +137,10 @@ public class JFrame extends javax.swing.JFrame {
         atras = new javax.swing.JButton();
         eleccion = new javax.swing.JLabel();
         pJuego = new javax.swing.JPanel();
-        volverAlMenu4 = new javax.swing.JButton();
+        jLayeredPane3 = new javax.swing.JLayeredPane();
+        jButton1 = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
-        jLayeredPane1 = new javax.swing.JLayeredPane();
+        jButton3 = new javax.swing.JButton();
         pInventario = new javax.swing.JPanel();
         jButton2 = new javax.swing.JButton();
 
@@ -274,7 +293,7 @@ public class JFrame extends javax.swing.JFrame {
                         .addComponent(jButton9)
                         .addGap(18, 18, 18)
                         .addComponent(jSlider1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(127, Short.MAX_VALUE))
+                .addContainerGap(2314, Short.MAX_VALUE))
         );
         pMenuLayout.setVerticalGroup(
             pMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -370,7 +389,7 @@ public class JFrame extends javax.swing.JFrame {
                                 .addComponent(Brook, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(57, 57, 57)
                                 .addComponent(Misty, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(65, Short.MAX_VALUE))
+                .addContainerGap(2252, Short.MAX_VALUE))
         );
 
         pSeleccionPersonajeLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {Ash, Brook, Misty});
@@ -381,12 +400,12 @@ public class JFrame extends javax.swing.JFrame {
                 .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(pSeleccionPersonajeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pSeleccionPersonajeLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 635, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 680, Short.MAX_VALUE)
                         .addComponent(volverAlMenu2))
                     .addGroup(pSeleccionPersonajeLayout.createSequentialGroup()
                         .addGap(48, 48, 48)
                         .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 73, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 118, Short.MAX_VALUE)
                         .addGroup(pSeleccionPersonajeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(Brook, javax.swing.GroupLayout.PREFERRED_SIZE, 429, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(Misty, javax.swing.GroupLayout.PREFERRED_SIZE, 413, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -476,7 +495,7 @@ public class JFrame extends javax.swing.JFrame {
                                     .addComponent(eleccion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addGap(81, 81, 81)
                                 .addComponent(Squirtle)))))
-                .addContainerGap(81, Short.MAX_VALUE))
+                .addContainerGap(2268, Short.MAX_VALUE))
         );
 
         pSeleccionarPokeñonLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {Squirtle, charmander, pikachu, vulvasur});
@@ -494,62 +513,76 @@ public class JFrame extends javax.swing.JFrame {
                     .addComponent(Squirtle, javax.swing.GroupLayout.PREFERRED_SIZE, 335, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(78, 78, 78)
                 .addComponent(eleccion, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 126, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 171, Short.MAX_VALUE)
                 .addComponent(volverAlMenu3)
                 .addGap(24, 24, 24))
         );
 
         contenedor.addTab("Seleccionar Pokeñon", pSeleccionarPokeñon);
 
-        volverAlMenu4.setText("Volver al menú");
-        volverAlMenu4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                volverAlMenu4ActionPerformed(evt);
+        pJuego.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                pJuegoKeyPressed(evt);
             }
         });
+
+        javax.swing.GroupLayout jLayeredPane3Layout = new javax.swing.GroupLayout(jLayeredPane3);
+        jLayeredPane3.setLayout(jLayeredPane3Layout);
+        jLayeredPane3Layout.setHorizontalGroup(
+            jLayeredPane3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 2114, Short.MAX_VALUE)
+        );
+        jLayeredPane3Layout.setVerticalGroup(
+            jLayeredPane3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 800, Short.MAX_VALUE)
+        );
+
+        jButton1.setText("Volver al menú");
 
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mapa.png"))); // NOI18N
         jLabel3.setText("jLabel3");
         jLabel3.setMaximumSize(new java.awt.Dimension(1000, 600));
 
-        javax.swing.GroupLayout jLayeredPane1Layout = new javax.swing.GroupLayout(jLayeredPane1);
-        jLayeredPane1.setLayout(jLayeredPane1Layout);
-        jLayeredPane1Layout.setHorizontalGroup(
-            jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
-        );
-        jLayeredPane1Layout.setVerticalGroup(
-            jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
-        );
+        jButton3.setText("jButton3");
+        jButton3.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jButton3KeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jButton3KeyReleased(evt);
+            }
+        });
 
         javax.swing.GroupLayout pJuegoLayout = new javax.swing.GroupLayout(pJuego);
         pJuego.setLayout(pJuegoLayout);
         pJuegoLayout.setHorizontalGroup(
             pJuegoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pJuegoLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLayeredPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 1199, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 1200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButton3)
+                .addGap(171, 171, 171)
+                .addComponent(jLayeredPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(volverAlMenu4)
-                .addGap(72, 72, 72))
+                .addComponent(jButton1)
+                .addContainerGap())
         );
         pJuegoLayout.setVerticalGroup(
             pJuegoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pJuegoLayout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-            .addGroup(pJuegoLayout.createSequentialGroup()
+            .addComponent(jLayeredPane3, javax.swing.GroupLayout.Alignment.TRAILING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pJuegoLayout.createSequentialGroup()
                 .addGroup(pJuegoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pJuegoLayout.createSequentialGroup()
-                        .addGap(125, 125, 125)
-                        .addComponent(volverAlMenu4))
-                    .addGroup(pJuegoLayout.createSequentialGroup()
-                        .addGap(126, 126, 126)
-                        .addComponent(jLayeredPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(0, 560, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pJuegoLayout.createSequentialGroup()
+                        .addGap(251, 771, Short.MAX_VALUE)
+                        .addComponent(jButton1))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pJuegoLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 788, Short.MAX_VALUE)))
+                .addContainerGap())
+            .addGroup(pJuegoLayout.createSequentialGroup()
+                .addGap(252, 252, 252)
+                .addComponent(jButton3)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         contenedor.addTab("Juego", pJuego);
@@ -568,14 +601,14 @@ public class JFrame extends javax.swing.JFrame {
         pInventarioLayout.setHorizontalGroup(
             pInventarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pInventarioLayout.createSequentialGroup()
-                .addGap(65, 65, 65)
+                .addGap(27, 27, 27)
                 .addComponent(jButton2)
-                .addContainerGap(1325, Short.MAX_VALUE))
+                .addContainerGap(3550, Short.MAX_VALUE))
         );
         pInventarioLayout.setVerticalGroup(
             pInventarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pInventarioLayout.createSequentialGroup()
-                .addContainerGap(712, Short.MAX_VALUE)
+                .addContainerGap(757, Short.MAX_VALUE)
                 .addComponent(jButton2)
                 .addGap(20, 20, 20))
         );
@@ -587,115 +620,51 @@ public class JFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         contenedor.setSelectedIndex(0);
-        contenedor.setEnabledAt(0, true);
-        contenedor.setEnabledAt(1, false);
-        contenedor.setEnabledAt(2, false);
-        contenedor.setEnabledAt(3, false);
-        contenedor.setEnabledAt(4, false);
     }//GEN-LAST:event_jButton2ActionPerformed
-
-    private void volverAlMenu4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_volverAlMenu4ActionPerformed
-        contenedor.setSelectedIndex(0);
-        contenedor.setEnabledAt(0, true);
-        contenedor.setEnabledAt(1, false);
-        contenedor.setEnabledAt(2, false);
-        contenedor.setEnabledAt(3, false);
-        contenedor.setEnabledAt(4, false);
-    }//GEN-LAST:event_volverAlMenu4ActionPerformed
 
     private void atrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_atrasActionPerformed
         contenedor.setSelectedIndex(1);
-        contenedor.setEnabledAt(0, false);
-        contenedor.setEnabledAt(1, true);
-        contenedor.setEnabledAt(2, false);
-        contenedor.setEnabledAt(3, false);
-        contenedor.setEnabledAt(4, false);
     }//GEN-LAST:event_atrasActionPerformed
 
     private void SquirtleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SquirtleActionPerformed
         contenedor.setSelectedIndex(3);
-        contenedor.setEnabledAt(0, false);
-        contenedor.setEnabledAt(1, false);
-        contenedor.setEnabledAt(2, false);
-        contenedor.setEnabledAt(3, true);
-        contenedor.setEnabledAt(4, false);
     }//GEN-LAST:event_SquirtleActionPerformed
 
     private void charmanderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_charmanderActionPerformed
         contenedor.setSelectedIndex(3);
-        contenedor.setEnabledAt(0, false);
-        contenedor.setEnabledAt(1, false);
-        contenedor.setEnabledAt(2, false);
-        contenedor.setEnabledAt(3, true);
-        contenedor.setEnabledAt(4, false);
     }//GEN-LAST:event_charmanderActionPerformed
 
     private void vulvasurActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_vulvasurActionPerformed
         contenedor.setSelectedIndex(3);
-        contenedor.setEnabledAt(0, false);
-        contenedor.setEnabledAt(1, false);
-        contenedor.setEnabledAt(2, false);
-        contenedor.setEnabledAt(3, true);
-        contenedor.setEnabledAt(4, false);
     }//GEN-LAST:event_vulvasurActionPerformed
 
     private void volverAlMenu3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_volverAlMenu3ActionPerformed
         contenedor.setSelectedIndex(0);
-        contenedor.setEnabledAt(0, true);
-        contenedor.setEnabledAt(1, false);
-        contenedor.setEnabledAt(2, false);
-        contenedor.setEnabledAt(3, false);
-        contenedor.setEnabledAt(4, false);
     }//GEN-LAST:event_volverAlMenu3ActionPerformed
 
     private void pikachuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pikachuActionPerformed
         contenedor.setSelectedIndex(3);
-        contenedor.setEnabledAt(0, false);
-        contenedor.setEnabledAt(1, false);
-        contenedor.setEnabledAt(2, false);
-        contenedor.setEnabledAt(3, true);
-        contenedor.setEnabledAt(4, false);
-
     }//GEN-LAST:event_pikachuActionPerformed
 
     private void AshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AshActionPerformed
         contenedor.setSelectedIndex(2);
-        contenedor.setEnabledAt(0, false);
-        contenedor.setEnabledAt(1, false);
-        contenedor.setEnabledAt(2, true);
-        contenedor.setEnabledAt(3, false);
-        contenedor.setEnabledAt(4, false);
         pikachu.setVisible(true);
     }//GEN-LAST:event_AshActionPerformed
 
     private void MistyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MistyActionPerformed
         contenedor.setSelectedIndex(2);
-        contenedor.setEnabledAt(0, false);
-        contenedor.setEnabledAt(1, false);
-        contenedor.setEnabledAt(2, true);
-        contenedor.setEnabledAt(3, false);
-        contenedor.setEnabledAt(4, false);
         pikachu.setVisible(false);
     }//GEN-LAST:event_MistyActionPerformed
 
     private void volverAlMenu2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_volverAlMenu2ActionPerformed
         contenedor.setSelectedIndex(0);
-        contenedor.setEnabledAt(0, true);
-        contenedor.setEnabledAt(1, false);
-        contenedor.setEnabledAt(2, false);
-        contenedor.setEnabledAt(3, false);
-        contenedor.setEnabledAt(4, false);
     }//GEN-LAST:event_volverAlMenu2ActionPerformed
 
     private void BrookActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BrookActionPerformed
         contenedor.setSelectedIndex(2);
-        contenedor.setEnabledAt(0, false);
-        contenedor.setEnabledAt(1, false);
-        contenedor.setEnabledAt(2, true);
-        contenedor.setEnabledAt(3, false);
-        contenedor.setEnabledAt(4, false);
         pikachu.setVisible(false);
     }//GEN-LAST:event_BrookActionPerformed
 
@@ -742,14 +711,40 @@ public class JFrame extends javax.swing.JFrame {
 
     private void nuevaPartidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nuevaPartidaActionPerformed
         contenedor.setSelectedIndex(1);
-        contenedor.setEnabledAt(0, false);
-        contenedor.setEnabledAt(1, true);
         ultimasPartidas.setVisible(false);
     }//GEN-LAST:event_nuevaPartidaActionPerformed
 
     private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
         //Metodo cargar partida
     }//GEN-LAST:event_jCheckBox1ActionPerformed
+
+    private void pJuegoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_pJuegoKeyPressed
+         
+    }//GEN-LAST:event_pJuegoKeyPressed
+
+    private void jButton3KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton3KeyPressed
+        //        case KeyEvent.VK_UP:
+        switch (evt.getKeyCode()) {
+            case KeyEvent.VK_UP:
+                startMoving(0, -1);
+                break;
+            case KeyEvent.VK_DOWN:
+                startMoving(0, 1);
+                break;
+            case KeyEvent.VK_LEFT:
+                startMoving(-1, 0);
+                break;
+            case KeyEvent.VK_RIGHT:
+                startMoving(1, 0);
+                break;
+            default:
+                break;
+        }
+    }//GEN-LAST:event_jButton3KeyPressed
+
+    private void jButton3KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton3KeyReleased
+        stopMoving();
+    }//GEN-LAST:event_jButton3KeyReleased
 
     /**
      * @param args the command line arguments
@@ -784,6 +779,39 @@ public class JFrame extends javax.swing.JFrame {
                 new JFrame().setVisible(true);
             }
         });
+//        KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new KeyEventDispatcher() {
+//            @Override
+//            public boolean dispatchKeyEvent(KeyEvent e) {
+//                if (e.getID() == KeyEvent.KEY_PRESSED) {
+//                    keyPressed(e);
+//                }
+//                return false;
+//            }
+//
+//            private void keyPressed(KeyEvent e) {
+//                switch (e.getKeyCode()) {
+//            case KeyEvent.VK_UP:
+//                System.out.println("Se presionó la tecla de flecha hacia arriba");
+//                // Realizar alguna acción específica aquí
+//                break;
+//            case KeyEvent.VK_DOWN:
+//                System.out.println("Se presionó la tecla de flecha hacia abajo");
+//                // Realizar alguna otra acción aquí
+//                break;
+//            case KeyEvent.VK_LEFT:
+//                System.out.println("Se presionó la tecla de flecha hacia la izquierda");
+//                // Realizar alguna otra acción aquí
+//                break;
+//            case KeyEvent.VK_RIGHT:
+//                System.out.println("Se presionó la tecla de flecha hacia la derecha");
+//                // Realizar alguna otra acción aquí
+//                break;
+//            default:
+//                System.out.println("mal");
+//                break;
+//        }
+//            }
+//        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -797,7 +825,9 @@ public class JFrame extends javax.swing.JFrame {
     private javax.swing.JTabbedPane contenedor;
     private javax.swing.JLabel eleccion;
     private javax.swing.JButton guardarPartida;
+    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton9;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
@@ -808,7 +838,7 @@ public class JFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JLayeredPane jLayeredPane1;
+    private javax.swing.JLayeredPane jLayeredPane3;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JSlider jSlider1;
     private javax.swing.JButton nuevaPartida;
@@ -821,7 +851,6 @@ public class JFrame extends javax.swing.JFrame {
     private javax.swing.JPanel ultimasPartidas;
     private javax.swing.JButton volverAlMenu2;
     private javax.swing.JButton volverAlMenu3;
-    private javax.swing.JButton volverAlMenu4;
     private javax.swing.JButton vulvasur;
     // End of variables declaration//GEN-END:variables
 }
