@@ -10,10 +10,14 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
 import java.awt.List;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -45,7 +49,6 @@ public class JFrame extends javax.swing.JFrame {
     private Clip clip;
     private AudioInputStream audioInputStream;
     JComponent listas;
-    
     public JFrame(){
         initComponents();
         contenedor.setEnabledAt(1, false);
@@ -72,15 +75,13 @@ public class JFrame extends javax.swing.JFrame {
             clip.start();
             clip.loop(Clip.LOOP_CONTINUOUSLY);
             FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-            float dB = (float) (Math.log10(0.5) * 35.0);
+            float dB = (float) (Math.log10(0.5) * 50.0);
             gainControl.setValue(dB);
         } catch (LineUnavailableException l) {
             System.out.println("Error en el audio");
         } catch (IOException e) {
             System.out.println("err");
         }
-        
-        
    }
 
     
@@ -120,7 +121,7 @@ public class JFrame extends javax.swing.JFrame {
         eleccion = new javax.swing.JLabel();
         pJuego = new javax.swing.JPanel();
         volverAlMenu4 = new javax.swing.JButton();
-        jLabel3 = new javax.swing.JLabel();
+        juegoLabel = new javax.swing.JLabel();
         jLayeredPane1 = new javax.swing.JLayeredPane();
         pInventario = new javax.swing.JPanel();
         jButton2 = new javax.swing.JButton();
@@ -501,6 +502,15 @@ public class JFrame extends javax.swing.JFrame {
 
         contenedor.addTab("Seleccionar Pokeñon", pSeleccionarPokeñon);
 
+        pJuego.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                pJuegoKeyPressed(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                pJuegoKeyTyped(evt);
+            }
+        });
+
         volverAlMenu4.setText("Volver al menú");
         volverAlMenu4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -508,9 +518,22 @@ public class JFrame extends javax.swing.JFrame {
             }
         });
 
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mapa.png"))); // NOI18N
-        jLabel3.setText("jLabel3");
-        jLabel3.setMaximumSize(new java.awt.Dimension(1000, 600));
+        juegoLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mapa.png"))); // NOI18N
+        juegoLabel.setText("jLabel3");
+        juegoLabel.setMaximumSize(new java.awt.Dimension(1000, 600));
+        juegoLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                juegoLabelMouseClicked(evt);
+            }
+        });
+        juegoLabel.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                juegoLabelKeyPressed(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                juegoLabelKeyTyped(evt);
+            }
+        });
 
         javax.swing.GroupLayout jLayeredPane1Layout = new javax.swing.GroupLayout(jLayeredPane1);
         jLayeredPane1.setLayout(jLayeredPane1Layout);
@@ -531,7 +554,7 @@ public class JFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLayeredPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 1200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(juegoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 1200, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(volverAlMenu4)
                 .addGap(72, 72, 72))
@@ -540,7 +563,7 @@ public class JFrame extends javax.swing.JFrame {
             pJuegoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pJuegoLayout.createSequentialGroup()
                 .addGap(14, 14, 14)
-                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addComponent(juegoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
             .addGroup(pJuegoLayout.createSequentialGroup()
                 .addGroup(pJuegoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pJuegoLayout.createSequentialGroup()
@@ -751,6 +774,49 @@ public class JFrame extends javax.swing.JFrame {
         //Metodo cargar partida
     }//GEN-LAST:event_jCheckBox1ActionPerformed
 
+    private void juegoLabelKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_juegoLabelKeyPressed
+        System.out.println(evt.getKeyCode());
+        switch (evt.getKeyCode()) {
+            case KeyEvent.VK_UP:
+                System.out.println("Se presionó la tecla de flecha hacia arriba");
+                // Realizar alguna acción específica aquí
+                break;
+            case KeyEvent.VK_DOWN:
+                System.out.println("Se presionó la tecla de flecha hacia abajo");
+                // Realizar alguna otra acción aquí
+                break;
+            case KeyEvent.VK_LEFT:
+                System.out.println("Se presionó la tecla de flecha hacia la izquierda");
+                // Realizar alguna otra acción aquí
+                break;
+            case KeyEvent.VK_RIGHT:
+                System.out.println("Se presionó la tecla de flecha hacia la derecha");
+                // Realizar alguna otra acción aquí
+                break;
+            default:
+                System.out.println("mal");
+                break;
+        }        
+    }//GEN-LAST:event_juegoLabelKeyPressed
+
+    private void pJuegoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_pJuegoKeyPressed
+        
+    }//GEN-LAST:event_pJuegoKeyPressed
+
+    private void juegoLabelKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_juegoLabelKeyTyped
+        // TODO add your handling code here:
+    }//GEN-LAST:event_juegoLabelKeyTyped
+
+    private void pJuegoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_pJuegoKeyTyped
+        
+    }//GEN-LAST:event_pJuegoKeyTyped
+
+    private void juegoLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_juegoLabelMouseClicked
+          
+    }//GEN-LAST:event_juegoLabelMouseClicked
+    
+    
+    
     /**
      * @param args the command line arguments
      */
@@ -784,6 +850,40 @@ public class JFrame extends javax.swing.JFrame {
                 new JFrame().setVisible(true);
             }
         });
+        KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new KeyEventDispatcher() {
+            @Override
+            public boolean dispatchKeyEvent(KeyEvent e) {
+                if (e.getID() == KeyEvent.KEY_PRESSED) {
+                    keyPressed(e);
+                }
+                return false;
+            }
+
+            private void keyPressed(KeyEvent e) {
+                switch (e.getKeyCode()) {
+            case KeyEvent.VK_UP:
+                System.out.println("Se presionó la tecla de flecha hacia arriba");
+                // Realizar alguna acción específica aquí
+                break;
+            case KeyEvent.VK_DOWN:
+                System.out.println("Se presionó la tecla de flecha hacia abajo");
+                // Realizar alguna otra acción aquí
+                break;
+            case KeyEvent.VK_LEFT:
+                System.out.println("Se presionó la tecla de flecha hacia la izquierda");
+                // Realizar alguna otra acción aquí
+                break;
+            case KeyEvent.VK_RIGHT:
+                System.out.println("Se presionó la tecla de flecha hacia la derecha");
+                // Realizar alguna otra acción aquí
+                break;
+            default:
+                System.out.println("mal");
+                break;
+        }
+            }
+        });
+
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -802,7 +902,6 @@ public class JFrame extends javax.swing.JFrame {
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
@@ -811,6 +910,7 @@ public class JFrame extends javax.swing.JFrame {
     private javax.swing.JLayeredPane jLayeredPane1;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JSlider jSlider1;
+    private javax.swing.JLabel juegoLabel;
     private javax.swing.JButton nuevaPartida;
     private javax.swing.JPanel pInventario;
     private javax.swing.JPanel pJuego;
