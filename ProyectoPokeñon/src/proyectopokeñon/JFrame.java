@@ -4,6 +4,7 @@
  */
 package proyectopokeñon;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -29,25 +30,29 @@ public class JFrame extends javax.swing.JFrame {
     
     private Clip clip;
     private AudioInputStream audioInputStream;
-    private BufferedImage image;
     private int x, y;
+    private Timer temporizador;
     private Timer timer;
     private int moveAmount = 5;
+    private Action accion;
     
     public JFrame(){
         initComponents();
+    //Bloquea todas las pestañas
         contenedor.setEnabledAt(0, false);
         contenedor.setEnabledAt(1, false);
         contenedor.setEnabledAt(2, false);
         contenedor.setEnabledAt(3, false);
         contenedor.setEnabledAt(4, false);
+    //Se oculta el panel de ultimas partidas inicialmente
         ultimasPartidas.setVisible(false);
+    //Para que habra la aplicacion a pantalla completa y maximizada
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         setSize(screenSize);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setLocationRelativeTo(null); 
-        
-        File soundFile = new File("src\\intro.wav");
+    //Introduce un audio
+        File soundFile = new File("src\\audio\\intro.wav");
         try {
             audioInputStream = AudioSystem.getAudioInputStream(soundFile);
         } catch (UnsupportedAudioFileException ue) {
@@ -59,7 +64,7 @@ public class JFrame extends javax.swing.JFrame {
             clip = AudioSystem.getClip();
             clip.open(audioInputStream);
             clip.start();
-            clip.loop(Clip.LOOP_CONTINUOUSLY);
+            clip.loop(Clip.LOOP_CONTINUOUSLY); //Para el el audio se ejecute en bucle
             FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
             float dB = (float) (Math.log10(0.5) * 35.0);
             gainControl.setValue(dB);
@@ -68,14 +73,23 @@ public class JFrame extends javax.swing.JFrame {
         } catch (IOException e) {
             System.out.println("err");
         }
- 
+    //Instancia una imagen de mapa????
         try {
-            image = ImageIO.read(new File("src/mapa.png"));
+            BufferedImage image = ImageIO.read(new File("src\\imagenes\\mapa.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
+    //Inicia accion de temporizador e indica que cambie de pantalla cuando termine el progreso
+        if(inicio.isEnabled()){
+            accion = new Action();
+            temporizador = new Timer(30,accion);
+            temporizador.start();
+            if(barra.getValue() == 100){
+                contenedor.setSelectedIndex(1);
+            }
+        }
    }
-
+//Controla los metodos y calculos para determinar el movimiento y velocidad
     private void startMoving(int dx, int dy) {
         stopMoving(); // Detener el movimiento actual si hay alguno en curso
         timer = new Timer(10, new ActionListener() {
@@ -107,6 +121,8 @@ public class JFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         contenedor = new javax.swing.JTabbedPane();
+        inicio = new javax.swing.JPanel();
+        barra = new javax.swing.JProgressBar();
         pMenu = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         ultimasPartidas = new javax.swing.JPanel();
@@ -131,16 +147,19 @@ public class JFrame extends javax.swing.JFrame {
         pSeleccionarPokeñon = new javax.swing.JPanel();
         pikachu = new javax.swing.JButton();
         volverAlMenu3 = new javax.swing.JButton();
-        vulvasur = new javax.swing.JButton();
+        bulvasur = new javax.swing.JButton();
         charmander = new javax.swing.JButton();
-        Squirtle = new javax.swing.JButton();
+        squirtle = new javax.swing.JButton();
         atras = new javax.swing.JButton();
         eleccion = new javax.swing.JLabel();
+        nPikachu = new javax.swing.JLabel();
+        nBulbasur = new javax.swing.JLabel();
+        nSquirtle = new javax.swing.JLabel();
+        nCharmander = new javax.swing.JLabel();
         pJuego = new javax.swing.JPanel();
         jLayeredPane3 = new javax.swing.JLayeredPane();
-        jButton1 = new javax.swing.JButton();
-        jLabel3 = new javax.swing.JLabel();
         jButton3 = new javax.swing.JButton();
+        jLabel9 = new javax.swing.JLabel();
         pInventario = new javax.swing.JPanel();
         jButton2 = new javax.swing.JButton();
 
@@ -152,6 +171,33 @@ public class JFrame extends javax.swing.JFrame {
         contenedor.setAlignmentY(1.0F);
         contenedor.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         contenedor.setFocusable(false);
+
+        barra.setBackground(new java.awt.Color(255, 255, 255));
+        barra.setToolTipText("");
+        barra.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                barraComponentShown(evt);
+            }
+        });
+
+        javax.swing.GroupLayout inicioLayout = new javax.swing.GroupLayout(inicio);
+        inicio.setLayout(inicioLayout);
+        inicioLayout.setHorizontalGroup(
+            inicioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(inicioLayout.createSequentialGroup()
+                .addGap(451, 451, 451)
+                .addComponent(barra, javax.swing.GroupLayout.PREFERRED_SIZE, 554, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(998, Short.MAX_VALUE))
+        );
+        inicioLayout.setVerticalGroup(
+            inicioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(inicioLayout.createSequentialGroup()
+                .addGap(230, 230, 230)
+                .addComponent(barra, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(826, Short.MAX_VALUE))
+        );
+
+        contenedor.addTab("Inicio", inicio);
 
         pMenu.setBackground(new java.awt.Color(255, 153, 153));
         pMenu.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -293,7 +339,7 @@ public class JFrame extends javax.swing.JFrame {
                         .addComponent(jButton9)
                         .addGap(18, 18, 18)
                         .addComponent(jSlider1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(2314, Short.MAX_VALUE))
+                .addContainerGap(631, Short.MAX_VALUE))
         );
         pMenuLayout.setVerticalGroup(
             pMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -302,7 +348,7 @@ public class JFrame extends javax.swing.JFrame {
                 .addGroup(pMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(ultimasPartidas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 356, Short.MAX_VALUE)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(82, 82, 82)
                 .addGroup(pMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -317,7 +363,7 @@ public class JFrame extends javax.swing.JFrame {
         pSeleccionPersonaje.setFont(new java.awt.Font("Calibri Light", 0, 18)); // NOI18N
 
         Brook.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
-        Brook.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pj2.png"))); // NOI18N
+        Brook.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/pj2.png"))); // NOI18N
         Brook.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 BrookActionPerformed(evt);
@@ -332,7 +378,7 @@ public class JFrame extends javax.swing.JFrame {
         });
 
         Misty.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
-        Misty.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pj3.png"))); // NOI18N
+        Misty.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/pj3.png"))); // NOI18N
         Misty.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 MistyActionPerformed(evt);
@@ -340,7 +386,7 @@ public class JFrame extends javax.swing.JFrame {
         });
 
         Ash.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
-        Ash.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pj1.png"))); // NOI18N
+        Ash.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/pj1.png"))); // NOI18N
         Ash.setBorderPainted(false);
         Ash.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -389,7 +435,7 @@ public class JFrame extends javax.swing.JFrame {
                                 .addComponent(Brook, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(57, 57, 57)
                                 .addComponent(Misty, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(2252, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pSeleccionPersonajeLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {Ash, Brook, Misty});
@@ -400,12 +446,12 @@ public class JFrame extends javax.swing.JFrame {
                 .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(pSeleccionPersonajeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pSeleccionPersonajeLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 680, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 985, Short.MAX_VALUE)
                         .addComponent(volverAlMenu2))
                     .addGroup(pSeleccionPersonajeLayout.createSequentialGroup()
                         .addGap(48, 48, 48)
                         .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 118, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 423, Short.MAX_VALUE)
                         .addGroup(pSeleccionPersonajeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(Brook, javax.swing.GroupLayout.PREFERRED_SIZE, 429, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(Misty, javax.swing.GroupLayout.PREFERRED_SIZE, 413, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -423,40 +469,81 @@ public class JFrame extends javax.swing.JFrame {
         contenedor.addTab("Seleccionar Personaje", pSeleccionPersonaje);
 
         pSeleccionarPokeñon.setBackground(new java.awt.Color(255, 255, 255));
+        pSeleccionarPokeñon.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                pSeleccionarPokeñonMouseEntered(evt);
+            }
+        });
 
         pikachu.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
-        pikachu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pikachu.png"))); // NOI18N
+        pikachu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/pikachu.png"))); // NOI18N
+        pikachu.setContentAreaFilled(false);
+        pikachu.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                pikachuMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                pikachuMouseExited(evt);
+            }
+        });
         pikachu.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 pikachuActionPerformed(evt);
             }
         });
 
-        volverAlMenu3.setText("Volver al menú");
+        volverAlMenu3.setText("VOLVER AL MENU");
         volverAlMenu3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 volverAlMenu3ActionPerformed(evt);
             }
         });
 
-        vulvasur.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bulbasur.png"))); // NOI18N
-        vulvasur.addActionListener(new java.awt.event.ActionListener() {
+        bulvasur.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/bulbasur.png"))); // NOI18N
+        bulvasur.setContentAreaFilled(false);
+        bulvasur.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                bulvasurMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                bulvasurMouseExited(evt);
+            }
+        });
+        bulvasur.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                vulvasurActionPerformed(evt);
+                bulvasurActionPerformed(evt);
             }
         });
 
-        charmander.setIcon(new javax.swing.ImageIcon(getClass().getResource("/charmander.png"))); // NOI18N
+        charmander.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/charmander.png"))); // NOI18N
+        charmander.setContentAreaFilled(false);
+        charmander.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                charmanderMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                charmanderMouseExited(evt);
+            }
+        });
         charmander.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 charmanderActionPerformed(evt);
             }
         });
 
-        Squirtle.setIcon(new javax.swing.ImageIcon(getClass().getResource("/squirtle.png"))); // NOI18N
-        Squirtle.addActionListener(new java.awt.event.ActionListener() {
+        squirtle.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/squirtle.png"))); // NOI18N
+        squirtle.setContentAreaFilled(false);
+        squirtle.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                squirtleMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                squirtleMouseExited(evt);
+            }
+        });
+        squirtle.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                SquirtleActionPerformed(evt);
+                squirtleActionPerformed(evt);
             }
         });
 
@@ -471,6 +558,27 @@ public class JFrame extends javax.swing.JFrame {
         eleccion.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         eleccion.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
+        nPikachu.setBackground(new java.awt.Color(255, 255, 255));
+        nPikachu.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        nPikachu.setText("PIKACHU");
+
+        nBulbasur.setBackground(new java.awt.Color(255, 255, 255));
+        nBulbasur.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        nBulbasur.setText("BULBASUR");
+
+        nSquirtle.setBackground(new java.awt.Color(255, 255, 255));
+        nSquirtle.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        nSquirtle.setText("SQUIRTLE");
+        nSquirtle.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                nSquirtleMouseClicked(evt);
+            }
+        });
+
+        nCharmander.setBackground(new java.awt.Color(255, 255, 255));
+        nCharmander.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        nCharmander.setText("CHARMANDER");
+
         javax.swing.GroupLayout pSeleccionarPokeñonLayout = new javax.swing.GroupLayout(pSeleccionarPokeñon);
         pSeleccionarPokeñon.setLayout(pSeleccionarPokeñonLayout);
         pSeleccionarPokeñonLayout.setHorizontalGroup(
@@ -478,44 +586,74 @@ public class JFrame extends javax.swing.JFrame {
             .addGroup(pSeleccionarPokeñonLayout.createSequentialGroup()
                 .addGroup(pSeleccionarPokeñonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pSeleccionarPokeñonLayout.createSequentialGroup()
-                        .addGap(42, 42, 42)
-                        .addComponent(volverAlMenu3))
-                    .addGroup(pSeleccionarPokeñonLayout.createSequentialGroup()
                         .addGap(53, 53, 53)
+                        .addComponent(atras, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(pSeleccionarPokeñonLayout.createSequentialGroup()
+                        .addGap(42, 42, 42)
+                        .addComponent(eleccion, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(pSeleccionarPokeñonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(atras, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(pSeleccionarPokeñonLayout.createSequentialGroup()
-                                .addComponent(pikachu)
-                                .addGap(73, 73, 73)
-                                .addGroup(pSeleccionarPokeñonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addGroup(pSeleccionarPokeñonLayout.createSequentialGroup()
-                                        .addComponent(vulvasur)
-                                        .addGap(71, 71, 71)
-                                        .addComponent(charmander))
-                                    .addComponent(eleccion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addGap(81, 81, 81)
-                                .addComponent(Squirtle)))))
-                .addContainerGap(2268, Short.MAX_VALUE))
+                                .addGap(1, 1, 1)
+                                .addComponent(nPikachu))
+                            .addComponent(pikachu))
+                        .addGroup(pSeleccionarPokeñonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(pSeleccionarPokeñonLayout.createSequentialGroup()
+                                .addGap(38, 38, 38)
+                                .addComponent(bulvasur)
+                                .addGap(60, 60, 60)
+                                .addComponent(charmander)
+                                .addGap(47, 47, 47)
+                                .addComponent(squirtle))
+                            .addGroup(pSeleccionarPokeñonLayout.createSequentialGroup()
+                                .addGap(49, 49, 49)
+                                .addComponent(nBulbasur)
+                                .addGap(98, 98, 98)
+                                .addComponent(nCharmander)
+                                .addGap(74, 74, 74)
+                                .addComponent(nSquirtle))))
+                    .addGroup(pSeleccionarPokeñonLayout.createSequentialGroup()
+                        .addGap(82, 82, 82)
+                        .addComponent(volverAlMenu3)))
+                .addGap(544, 965, Short.MAX_VALUE))
         );
 
-        pSeleccionarPokeñonLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {Squirtle, charmander, pikachu, vulvasur});
+        pSeleccionarPokeñonLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {bulvasur, charmander, pikachu, squirtle});
 
         pSeleccionarPokeñonLayout.setVerticalGroup(
             pSeleccionarPokeñonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pSeleccionarPokeñonLayout.createSequentialGroup()
                 .addGap(29, 29, 29)
                 .addComponent(atras)
-                .addGap(56, 56, 56)
+                .addGap(47, 47, 47)
                 .addGroup(pSeleccionarPokeñonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(vulvasur, javax.swing.GroupLayout.PREFERRED_SIZE, 335, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(pikachu, javax.swing.GroupLayout.PREFERRED_SIZE, 335, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(charmander, javax.swing.GroupLayout.PREFERRED_SIZE, 335, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Squirtle, javax.swing.GroupLayout.PREFERRED_SIZE, 335, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(78, 78, 78)
-                .addComponent(eleccion, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 171, Short.MAX_VALUE)
-                .addComponent(volverAlMenu3)
-                .addGap(24, 24, 24))
+                    .addGroup(pSeleccionarPokeñonLayout.createSequentialGroup()
+                        .addGroup(pSeleccionarPokeñonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(pSeleccionarPokeñonLayout.createSequentialGroup()
+                                .addGap(141, 141, 141)
+                                .addGroup(pSeleccionarPokeñonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(squirtle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(charmander, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(bulvasur, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pSeleccionarPokeñonLayout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(pikachu)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
+                        .addGroup(pSeleccionarPokeñonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(pSeleccionarPokeñonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(nSquirtle)
+                                .addGroup(pSeleccionarPokeñonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(nBulbasur)))
+                            .addComponent(nPikachu)
+                            .addComponent(nCharmander))
+                        .addContainerGap(698, Short.MAX_VALUE))
+                    .addGroup(pSeleccionarPokeñonLayout.createSequentialGroup()
+                        .addGap(84, 84, 84)
+                        .addComponent(eleccion, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(227, 227, 227)
+                        .addComponent(volverAlMenu3)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
         contenedor.addTab("Seleccionar Pokeñon", pSeleccionarPokeñon);
@@ -526,24 +664,12 @@ public class JFrame extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout jLayeredPane3Layout = new javax.swing.GroupLayout(jLayeredPane3);
-        jLayeredPane3.setLayout(jLayeredPane3Layout);
-        jLayeredPane3Layout.setHorizontalGroup(
-            jLayeredPane3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 2114, Short.MAX_VALUE)
-        );
-        jLayeredPane3Layout.setVerticalGroup(
-            jLayeredPane3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 800, Short.MAX_VALUE)
-        );
-
-        jButton1.setText("Volver al menú");
-
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mapa.png"))); // NOI18N
-        jLabel3.setText("jLabel3");
-        jLabel3.setMaximumSize(new java.awt.Dimension(1000, 600));
-
         jButton3.setText("jButton3");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
         jButton3.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 jButton3KeyPressed(evt);
@@ -553,36 +679,53 @@ public class JFrame extends javax.swing.JFrame {
             }
         });
 
+        jLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/mapa.jpg"))); // NOI18N
+
+        jLayeredPane3.setLayer(jButton3, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jLayeredPane3.setLayer(jLabel9, javax.swing.JLayeredPane.DEFAULT_LAYER);
+
+        javax.swing.GroupLayout jLayeredPane3Layout = new javax.swing.GroupLayout(jLayeredPane3);
+        jLayeredPane3.setLayout(jLayeredPane3Layout);
+        jLayeredPane3Layout.setHorizontalGroup(
+            jLayeredPane3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jLayeredPane3Layout.createSequentialGroup()
+                .addGap(242, 242, 242)
+                .addComponent(jButton3)
+                .addContainerGap(545, Short.MAX_VALUE))
+            .addGroup(jLayeredPane3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jLayeredPane3Layout.createSequentialGroup()
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel9)
+                    .addContainerGap()))
+        );
+        jLayeredPane3Layout.setVerticalGroup(
+            jLayeredPane3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jLayeredPane3Layout.createSequentialGroup()
+                .addContainerGap(452, Short.MAX_VALUE)
+                .addComponent(jButton3)
+                .addGap(37, 37, 37))
+            .addGroup(jLayeredPane3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jLayeredPane3Layout.createSequentialGroup()
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel9)
+                    .addContainerGap()))
+        );
+
         javax.swing.GroupLayout pJuegoLayout = new javax.swing.GroupLayout(pJuego);
         pJuego.setLayout(pJuegoLayout);
         pJuegoLayout.setHorizontalGroup(
             pJuegoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pJuegoLayout.createSequentialGroup()
-                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 1199, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton3)
-                .addGap(171, 171, 171)
+                .addContainerGap()
                 .addComponent(jLayeredPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton1)
-                .addContainerGap())
+                .addGap(0, 1135, Short.MAX_VALUE))
         );
         pJuegoLayout.setVerticalGroup(
             pJuegoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLayeredPane3, javax.swing.GroupLayout.Alignment.TRAILING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pJuegoLayout.createSequentialGroup()
-                .addGroup(pJuegoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pJuegoLayout.createSequentialGroup()
-                        .addGap(251, 771, Short.MAX_VALUE)
-                        .addComponent(jButton1))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pJuegoLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 788, Short.MAX_VALUE)))
-                .addContainerGap())
-            .addGroup(pJuegoLayout.createSequentialGroup()
-                .addGap(252, 252, 252)
-                .addComponent(jButton3)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jLayeredPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(93, 593, Short.MAX_VALUE))
         );
 
         contenedor.addTab("Juego", pJuego);
@@ -603,12 +746,12 @@ public class JFrame extends javax.swing.JFrame {
             .addGroup(pInventarioLayout.createSequentialGroup()
                 .addGap(27, 27, 27)
                 .addComponent(jButton2)
-                .addContainerGap(3550, Short.MAX_VALUE))
+                .addContainerGap(1867, Short.MAX_VALUE))
         );
         pInventarioLayout.setVerticalGroup(
             pInventarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pInventarioLayout.createSequentialGroup()
-                .addContainerGap(757, Short.MAX_VALUE)
+                .addContainerGap(1062, Short.MAX_VALUE)
                 .addComponent(jButton2)
                 .addGap(20, 20, 20))
         );
@@ -620,42 +763,18 @@ public class JFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-
+//Metodos para controlar los eventos
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         contenedor.setSelectedIndex(0);
     }//GEN-LAST:event_jButton2ActionPerformed
-
-    private void atrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_atrasActionPerformed
-        contenedor.setSelectedIndex(1);
-    }//GEN-LAST:event_atrasActionPerformed
-
-    private void SquirtleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SquirtleActionPerformed
-        contenedor.setSelectedIndex(3);
-    }//GEN-LAST:event_SquirtleActionPerformed
-
-    private void charmanderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_charmanderActionPerformed
-        contenedor.setSelectedIndex(3);
-    }//GEN-LAST:event_charmanderActionPerformed
-
-    private void vulvasurActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_vulvasurActionPerformed
-        contenedor.setSelectedIndex(3);
-    }//GEN-LAST:event_vulvasurActionPerformed
-
-    private void volverAlMenu3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_volverAlMenu3ActionPerformed
-        contenedor.setSelectedIndex(0);
-    }//GEN-LAST:event_volverAlMenu3ActionPerformed
-
-    private void pikachuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pikachuActionPerformed
-        contenedor.setSelectedIndex(3);
-    }//GEN-LAST:event_pikachuActionPerformed
-
+ 
     private void AshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AshActionPerformed
-        contenedor.setSelectedIndex(2);
+        contenedor.setSelectedIndex(3);
         pikachu.setVisible(true);
     }//GEN-LAST:event_AshActionPerformed
 
     private void MistyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MistyActionPerformed
-        contenedor.setSelectedIndex(2);
+        contenedor.setSelectedIndex(3);
         pikachu.setVisible(false);
     }//GEN-LAST:event_MistyActionPerformed
 
@@ -664,14 +783,14 @@ public class JFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_volverAlMenu2ActionPerformed
 
     private void BrookActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BrookActionPerformed
-        contenedor.setSelectedIndex(2);
+        contenedor.setSelectedIndex(3);
         pikachu.setVisible(false);
     }//GEN-LAST:event_BrookActionPerformed
 
     private void pMenuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pMenuMouseClicked
 
     }//GEN-LAST:event_pMenuMouseClicked
-
+//Controla el boton de audio
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
         if (clip.isRunning()) {
             clip.stop();
@@ -687,14 +806,14 @@ public class JFrame extends javax.swing.JFrame {
     private void jSlider1PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSlider1PropertyChange
 
     }//GEN-LAST:event_jSlider1PropertyChange
-
+//Controla el slider de audio
     private void jSlider1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider1StateChanged
         float volume = (float) jSlider1.getValue() / 100.0f;
         FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
         float dB = (float) (Math.log10(volume) * 35.0);
         gainControl.setValue(dB);
     }//GEN-LAST:event_jSlider1StateChanged
-
+//Guarda la partida y muestra que se ha guardado correctamente
     private void guardarPartidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_guardarPartidaActionPerformed
         jLabel1.setText("Tu partida ha sido guardada");
         ultimasPartidas.setVisible(false);
@@ -704,13 +823,13 @@ public class JFrame extends javax.swing.JFrame {
         timer.setRepeats(false);
         timer.start();
     }//GEN-LAST:event_guardarPartidaActionPerformed
-
+//Carga los datos desde un fichero todos los datos actuales 
     private void cargarPartidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cargarPartidaActionPerformed
         ultimasPartidas.setVisible(true);
     }//GEN-LAST:event_cargarPartidaActionPerformed
 
     private void nuevaPartidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nuevaPartidaActionPerformed
-        contenedor.setSelectedIndex(1);
+        contenedor.setSelectedIndex(2);
         ultimasPartidas.setVisible(false);
     }//GEN-LAST:event_nuevaPartidaActionPerformed
 
@@ -722,14 +841,17 @@ public class JFrame extends javax.swing.JFrame {
          
     }//GEN-LAST:event_pJuegoKeyPressed
 
+    private void jButton3KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton3KeyReleased
+        stopMoving();
+    }//GEN-LAST:event_jButton3KeyReleased
+
     private void jButton3KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton3KeyPressed
-        //        case KeyEvent.VK_UP:
         switch (evt.getKeyCode()) {
             case KeyEvent.VK_UP:
-                startMoving(0, -1);
+                startMoving(0, -1); 
                 break;
             case KeyEvent.VK_DOWN:
-                startMoving(0, 1);
+                startMoving(0, 1); 
                 break;
             case KeyEvent.VK_LEFT:
                 startMoving(-1, 0);
@@ -742,10 +864,90 @@ public class JFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton3KeyPressed
 
-    private void jButton3KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton3KeyReleased
-        stopMoving();
-    }//GEN-LAST:event_jButton3KeyReleased
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton3ActionPerformed
 
+    private void pSeleccionarPokeñonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pSeleccionarPokeñonMouseEntered
+        // TODO add your handling code here:
+    }//GEN-LAST:event_pSeleccionarPokeñonMouseEntered
+
+    private void nSquirtleMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_nSquirtleMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_nSquirtleMouseClicked
+
+    private void atrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_atrasActionPerformed
+        contenedor.setSelectedIndex(1);
+    }//GEN-LAST:event_atrasActionPerformed
+
+    private void squirtleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_squirtleActionPerformed
+        contenedor.setSelectedIndex(4);
+    }//GEN-LAST:event_squirtleActionPerformed
+
+    private void squirtleMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_squirtleMouseExited
+        nSquirtle.setForeground(Color.BLACK);
+    }//GEN-LAST:event_squirtleMouseExited
+
+    private void squirtleMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_squirtleMouseEntered
+        nSquirtle.setForeground(Color.CYAN);
+    }//GEN-LAST:event_squirtleMouseEntered
+
+    private void charmanderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_charmanderActionPerformed
+        contenedor.setSelectedIndex(4);
+    }//GEN-LAST:event_charmanderActionPerformed
+
+    private void charmanderMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_charmanderMouseExited
+        nCharmander.setForeground(Color.BLACK);
+    }//GEN-LAST:event_charmanderMouseExited
+
+    private void charmanderMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_charmanderMouseEntered
+        nCharmander.setForeground(Color.RED);
+    }//GEN-LAST:event_charmanderMouseEntered
+
+    private void bulvasurActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bulvasurActionPerformed
+        contenedor.setSelectedIndex(4);
+    }//GEN-LAST:event_bulvasurActionPerformed
+
+    private void bulvasurMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bulvasurMouseExited
+        nBulbasur.setForeground(Color.BLACK);
+    }//GEN-LAST:event_bulvasurMouseExited
+
+    private void bulvasurMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bulvasurMouseEntered
+        nBulbasur.setForeground(Color.GREEN);
+    }//GEN-LAST:event_bulvasurMouseEntered
+
+    private void volverAlMenu3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_volverAlMenu3ActionPerformed
+        contenedor.setSelectedIndex(0);
+    }//GEN-LAST:event_volverAlMenu3ActionPerformed
+
+    private void pikachuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pikachuActionPerformed
+        contenedor.setSelectedIndex(4);
+    }//GEN-LAST:event_pikachuActionPerformed
+
+    private void pikachuMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pikachuMouseExited
+        nPikachu.setForeground(Color.BLACK);
+    }//GEN-LAST:event_pikachuMouseExited
+
+    private void pikachuMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pikachuMouseEntered
+        nPikachu.setForeground(Color.YELLOW);
+    }//GEN-LAST:event_pikachuMouseEntered
+
+    private void barraComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_barraComponentShown
+        // TODO add your handling code here:
+    }//GEN-LAST:event_barraComponentShown
+//Clase interna de Action que contiene un metodo que aumenta el valor de la barra
+    public class Action implements ActionListener{
+        int i = 0;
+        public void actionPerformed(ActionEvent e) {
+            barra.setValue(i);
+            if(i < 100){
+                i++;
+            }else{
+                contenedor.setSelectedIndex(1);
+                temporizador.stop();
+            }           
+        }
+    }
     /**
      * @param args the command line arguments
      */
@@ -779,68 +981,40 @@ public class JFrame extends javax.swing.JFrame {
                 new JFrame().setVisible(true);
             }
         });
-//        KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new KeyEventDispatcher() {
-//            @Override
-//            public boolean dispatchKeyEvent(KeyEvent e) {
-//                if (e.getID() == KeyEvent.KEY_PRESSED) {
-//                    keyPressed(e);
-//                }
-//                return false;
-//            }
-//
-//            private void keyPressed(KeyEvent e) {
-//                switch (e.getKeyCode()) {
-//            case KeyEvent.VK_UP:
-//                System.out.println("Se presionó la tecla de flecha hacia arriba");
-//                // Realizar alguna acción específica aquí
-//                break;
-//            case KeyEvent.VK_DOWN:
-//                System.out.println("Se presionó la tecla de flecha hacia abajo");
-//                // Realizar alguna otra acción aquí
-//                break;
-//            case KeyEvent.VK_LEFT:
-//                System.out.println("Se presionó la tecla de flecha hacia la izquierda");
-//                // Realizar alguna otra acción aquí
-//                break;
-//            case KeyEvent.VK_RIGHT:
-//                System.out.println("Se presionó la tecla de flecha hacia la derecha");
-//                // Realizar alguna otra acción aquí
-//                break;
-//            default:
-//                System.out.println("mal");
-//                break;
-//        }
-//            }
-//        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Ash;
     private javax.swing.JButton Brook;
     private javax.swing.JButton Misty;
-    private javax.swing.JButton Squirtle;
     private javax.swing.JButton atras;
+    private javax.swing.JProgressBar barra;
+    private javax.swing.JButton bulvasur;
     private javax.swing.JButton cargarPartida;
     private javax.swing.JButton charmander;
     private javax.swing.JTabbedPane contenedor;
     private javax.swing.JLabel eleccion;
     private javax.swing.JButton guardarPartida;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JPanel inicio;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton9;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JLayeredPane jLayeredPane3;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JSlider jSlider1;
+    private javax.swing.JLabel nBulbasur;
+    private javax.swing.JLabel nCharmander;
+    private javax.swing.JLabel nPikachu;
+    private javax.swing.JLabel nSquirtle;
     private javax.swing.JButton nuevaPartida;
     private javax.swing.JPanel pInventario;
     private javax.swing.JPanel pJuego;
@@ -848,9 +1022,9 @@ public class JFrame extends javax.swing.JFrame {
     private javax.swing.JPanel pSeleccionPersonaje;
     private javax.swing.JPanel pSeleccionarPokeñon;
     private javax.swing.JButton pikachu;
+    private javax.swing.JButton squirtle;
     private javax.swing.JPanel ultimasPartidas;
     private javax.swing.JButton volverAlMenu2;
     private javax.swing.JButton volverAlMenu3;
-    private javax.swing.JButton vulvasur;
     // End of variables declaration//GEN-END:variables
 }
