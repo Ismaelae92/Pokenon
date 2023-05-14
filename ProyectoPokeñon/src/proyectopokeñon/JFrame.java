@@ -6,20 +6,25 @@ package proyectopokeñon;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Image;
+import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.stream.IntStream;
+import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.swing.Icon;
 import javax.swing.Timer;
+import java.awt.Rectangle;
 
 /**
  *
@@ -29,51 +34,66 @@ public class JFrame extends javax.swing.JFrame {
     
     private Clip clip;
     private AudioInputStream audioInputStream;
+    private int x, y;
     private Timer temporizador;
     private Timer timer;
     private int moveAmount = 5;
     private Action accion;
-    int limiteX, limiteY;
-    private int x, y;
+    int limiteX ;
+    int limiteY;
+    
     
     public JFrame(){
         initComponents();
-        
-        // Bloquear todas las pestañas
-        IntStream.range(0, contenedor.getTabCount()).forEach(i -> contenedor.setEnabledAt(i, false));
-        
-        // Ocultar el panel de últimas partidas inicialmente
+    //Bloquea todas las pestañas
+        contenedor.setEnabledAt(0, false);
+        contenedor.setEnabledAt(1, false);
+        contenedor.setEnabledAt(2, false);
+        contenedor.setEnabledAt(3, false);
+        contenedor.setEnabledAt(4, false);
+    //Se oculta el panel de ultimas partidas inicialmente
         ultimasPartidas.setVisible(false);
-        
-        // Configurar tamaño y posición de la ventana
+    //Para que habra la aplicacion a pantalla completa y maximizada
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        setSize(screenSize);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setLocationRelativeTo(null); 
-        
-        // Introducir audio
+    //Introduce un audio
+        File soundFile = new File("src\\audio\\intro.wav");
         try {
-            File soundFile = new File("src\\audio\\intro.wav");
             audioInputStream = AudioSystem.getAudioInputStream(soundFile);
+        } catch (UnsupportedAudioFileException ue) {
+            System.out.println("Archivo incorrecto");
+        } catch (IOException e) {
+            System.out.println("Error inesperado");
+        }
+        try {
             clip = AudioSystem.getClip();
             clip.open(audioInputStream);
             clip.start();
-            clip.loop(Clip.LOOP_CONTINUOUSLY);
+            clip.loop(Clip.LOOP_CONTINUOUSLY); //Para el el audio se ejecute en bucle
             FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
             float dB = (float) (Math.log10(0.5) * 35.0);
             gainControl.setValue(dB);
-        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-            throw new RuntimeException("Error al cargar el audio");
+        } catch (LineUnavailableException l) {
+            System.out.println("Error en el audio");
+        } catch (IOException e) {
+            System.out.println("err");
         }
     
-        // Iniciar acción de temporizador para cambiar de pantalla cuando termine el progreso
-        if (inicio.isEnabled()){
+    //Inicia accion de temporizador e indica que cambie de pantalla cuando termine el progreso
+        if(inicio.isEnabled()){
             accion = new Action();
-            temporizador = new Timer(30, accion);
+            temporizador = new Timer(30,accion);
             temporizador.start();
-        }
+            if(barra.getValue() == 100){
+                contenedor.setSelectedIndex(1);
+            }
+        }  
+        ultimasPartidas.setOpaque(true);
     }
     
-    // Inicializar límites del movimiento del botón cuando el JFrame es visible
-    @Override
+    //Inicializar límites del movimiento del botón cuando el JFrame es visible
     public void setVisible(boolean b) {
         super.setVisible(b);
         if (b) {
@@ -84,7 +104,12 @@ public class JFrame extends javax.swing.JFrame {
     
     private void startMoving(int dx, int dy) {
         stopMoving(); // Detener el movimiento actual si hay alguno en curso
-        timer = new Timer(10, e -> moveButton(dx * moveAmount, dy * moveAmount));
+        timer = new Timer(10, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                moveButton(dx * moveAmount, dy * moveAmount);
+            }
+        });
         timer.start();
     }
 
@@ -109,15 +134,15 @@ public class JFrame extends javax.swing.JFrame {
             y = limiteY;
         }
         // Detecta si el boton esta cerca de una coordenada
-        double distancia = Math.sqrt(Math.pow(x - 420, 2) + Math.pow(y - 672, 2));
+        double distancia = Math.sqrt(Math.pow(x - 430, 2) + Math.pow(y - 700, 2));
 
         // Si la distancia es menor que 50, mostrar el JTabbedPane
         if (distancia < 100) {
         contenedor.setSelectedIndex(6);
+
     }
         IconoEntrenador.setLocation(x, y);
     }
-
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -546,7 +571,7 @@ public class JFrame extends javax.swing.JFrame {
                 IconoEntrenadorKeyReleased(evt);
             }
         });
-        pJuego.add(IconoEntrenador, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 80, -1, -1));
+        pJuego.add(IconoEntrenador, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 120, -1, -1));
 
         jLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/mapa.jpg"))); // NOI18N
         jLabel9.setMaximumSize(new java.awt.Dimension(1000, 500));
@@ -729,7 +754,7 @@ public class JFrame extends javax.swing.JFrame {
         );
         EnfermeriaLayout.setVerticalGroup(
             EnfermeriaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 770, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         contenedor.addTab("tab7", Enfermeria);
@@ -907,8 +932,7 @@ public class JFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_IconoEntrenadorKeyPressed
 
     private void IconoEntrenadorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_IconoEntrenadorActionPerformed
-        Pokeñon pokeñon = new Pokeñon();
-        pokeñon.getTipo()
+        // TODO add your handling code here:
     }//GEN-LAST:event_IconoEntrenadorActionPerformed
 
     private void jButton42ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton42ActionPerformed

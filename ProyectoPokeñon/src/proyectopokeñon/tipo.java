@@ -4,5 +4,6 @@ public enum Tipo {
     AGUA,
     FUEGO,
     ELECTRICO,
-    PLANTA
+    PLANTA,
+    NORMAL
 }

@@ -7,17 +7,29 @@ public class Pokeñon implements Serializable{
     private Ataque[] ataques;
     private String nombre;
     private Tipo tipo;
-    private int salud;
+    private double salud;
+    private double fuerza;
+    private String url;
 
-    public Pokeñon(Ataque[] ataques, String nombre, Tipo tipo, int salud) {
-        this.ataques = ataques;
+    public Pokeñon(int salud, String nombre, Tipo tipo, double fuerza) {
+        this.salud=salud;
         this.nombre = nombre;
         this.tipo = tipo;
-        this.salud = salud;
+        this.fuerza = fuerza;
     }
     
     public Pokeñon() {
         
+    }
+    
+    public Pokeñon(String nombre,Tipo tipo,String url) {
+        this.tipo = tipo;
+        this.nombre = nombre;
+        salud=100;
+        //Calcular fuerza y salud
+        salud+=Math.random()*100;
+        fuerza=Math.random()*100;
+        this.url = url;
     }
 
     public Ataque[] getAtaques() {
@@ -44,49 +56,96 @@ public class Pokeñon implements Serializable{
         this.tipo = tipo;
     }
 
-    public int getSalud() {
+    public double getSalud() {
         return salud;
     }
 
-    public void setSalud(int salud) {
+    public void setSalud(double salud) {
+        if (salud<0){
+            salud=0;
+        }
         this.salud = salud;
     }
+
+    public double getFuerza() {
+        return fuerza;
+    }
+
+    public void setFuerza(double fuerza) {
+        this.fuerza = fuerza;
+    }
     
     
-    public double ataque(Pokeñon p,int n_ataque){
+    
+    public void ataque(Pokeñon p,int n_ataque) {
         double damage = ataques[n_ataque].getDaño();
         if (ataques[n_ataque].getTipo()==tipo) {
-            damage = damage * 2;
+            damage = damage * 1.5;
         }
         if (tipo==Tipo.AGUA && p.getTipo()==Tipo.FUEGO){
-            if(n_ataque == 1){
-                p.setSalud(p.getSalud() - 20); 
-            }else if(n_ataque == 2){
-                p.setSalud(salud -= 30);
-            }
-            p.setSalud(salud -= 20); 
+            damage = damage * 1.5;
         }
         if (tipo==Tipo.ELECTRICO && p.getTipo()==Tipo.AGUA){
-            damage = damage * 2;
+            damage = damage * 1.5;
         }
         if (tipo==Tipo.FUEGO && p.getTipo()==Tipo.PLANTA){
-            damage = damage * 2;
+            damage = damage * 1.5;
         }
         if (tipo==Tipo.PLANTA && p.getTipo()==Tipo.ELECTRICO){
-            damage = damage * 2;
+            damage = damage * 1.5;
         }
         if(tipo==Tipo.AGUA && p.getTipo()==Tipo.PLANTA){
-            damage = 0;
+            damage = damage * 0.5;
         }
         if(tipo==Tipo.ELECTRICO && p.getTipo()==Tipo.PLANTA){
-            damage = 0;
+            damage = damage * 0.5;
         }
         if(tipo==Tipo.FUEGO && p.getTipo()==Tipo.AGUA){
-            damage = 0;
+            damage = damage * 0.5;
         }
         if(tipo==Tipo.PLANTA && p.getTipo()==Tipo.FUEGO){
-            damage = 0;
+            damage = damage * 0.5;
         }
-        return damage;
+        //ATAQUE
+        if (ataques[n_ataque].getTipo()==Tipo.AGUA && p.getTipo()==Tipo.FUEGO){
+            damage = damage * 2;
+        }
+        if (ataques[n_ataque].getTipo()==Tipo.ELECTRICO && p.getTipo()==Tipo.AGUA){
+            damage = damage * 2;
+        }
+        if (ataques[n_ataque].getTipo()==Tipo.FUEGO && p.getTipo()==Tipo.PLANTA){
+            damage = damage * 2;
+        }
+        if (ataques[n_ataque].getTipo()==Tipo.PLANTA && p.getTipo()==Tipo.ELECTRICO){
+            damage = damage * 2;
+        }
+        if(ataques[n_ataque].getTipo()==Tipo.AGUA && p.getTipo()==Tipo.PLANTA){
+            damage = damage * 0.5;
+        }
+        if(ataques[n_ataque].getTipo()==Tipo.ELECTRICO && p.getTipo()==Tipo.PLANTA){
+            damage = damage * 0.5;
+        }
+        if(ataques[n_ataque].getTipo()==Tipo.FUEGO && p.getTipo()==Tipo.AGUA){
+            damage = damage * 0.5;
+        }
+        if(ataques[n_ataque].getTipo()==Tipo.PLANTA && p.getTipo()==Tipo.FUEGO){
+            damage = damage * 0.5;
+        }
+        if(fuerza>=p.getFuerza()){
+            damage = damage * 1.3;
+        } else {
+            damage = damage * 0.75;
+        }
+        int critico = (int)Math.round(Math.random()*100);
+        if(critico<=20){
+            damage= damage * 1.5;
+        }
+        p.setSalud(p.getSalud()-damage);
     }
+
+    @Override
+    public String toString() {
+        return nombre+" es de tipo " + tipo.toString();
+    }
+    
 }

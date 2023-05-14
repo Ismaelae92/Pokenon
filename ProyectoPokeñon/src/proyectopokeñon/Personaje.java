@@ -1,34 +1,27 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package proyectopokeñon;
 
 import java.io.Serializable;
 import java.util.List;
 
-/**
- *
- * @author Ismael
- */
-public class Personaje implements Serializable{
-    private List<Objetos> objetos;
+public class Personaje implements Serializable {
+    private List<Objeto> objetos;
     private List<Pokeñon> pokeñons;
     private String nombreUsuario;
+    
 
-    public Personaje() {
+    public Personaje(List<Objeto> objetos, List<Pokeñon> pokeñons,String nombre) {
         this.objetos = objetos;
         this.pokeñons = pokeñons;
-        this.nombreUsuario = nombreUsuario;
+    }
+    
+    public Personaje() {
+        
     }
 
-    public List<Objetos> getObjetos() {
+    public List<Objeto> getObjetos() {
         return objetos;
     }
 
-    public void setObjetos(List<Objetos> objetos) {
-        this.objetos = objetos;
-    }
 
     public List<Pokeñon> getPokeñons() {
         return pokeñons;
@@ -46,4 +39,6 @@ public class Personaje implements Serializable{
         this.nombreUsuario = nombreUsuario;
     }
 
+    
+    
 }
