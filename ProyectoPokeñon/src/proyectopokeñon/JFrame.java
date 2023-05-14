@@ -6,25 +6,20 @@ package proyectopokeñon;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Image;
-import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import javax.imageio.ImageIO;
+import java.util.stream.IntStream;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
-import javax.swing.Icon;
 import javax.swing.Timer;
-import java.awt.Rectangle;
 
 /**
  *
@@ -32,67 +27,53 @@ import java.awt.Rectangle;
  */
 public class JFrame extends javax.swing.JFrame {
     
-private Clip clip;
+    private Clip clip;
     private AudioInputStream audioInputStream;
-    private int x, y;
     private Timer temporizador;
     private Timer timer;
     private int moveAmount = 5;
     private Action accion;
-    int limiteX ;
-    int limiteY;
+    int limiteX, limiteY;
+    private int x, y;
     
     public JFrame(){
         initComponents();
-    //Bloquea todas las pestañas
-        contenedor.setEnabledAt(0, false);
-        contenedor.setEnabledAt(1, false);
-        contenedor.setEnabledAt(2, false);
-        contenedor.setEnabledAt(3, false);
-        contenedor.setEnabledAt(4, false);
-    //Se oculta el panel de ultimas partidas inicialmente
+        
+        // Bloquear todas las pestañas
+        IntStream.range(0, contenedor.getTabCount()).forEach(i -> contenedor.setEnabledAt(i, false));
+        
+        // Ocultar el panel de últimas partidas inicialmente
         ultimasPartidas.setVisible(false);
-    //Para que habra la aplicacion a pantalla completa y maximizada
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        setSize(screenSize);
+        
+        // Configurar tamaño y posición de la ventana
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setLocationRelativeTo(null); 
-    //Introduce un audio
-        File soundFile = new File("src\\audio\\intro.wav");
+        
+        // Introducir audio
         try {
+            File soundFile = new File("src\\audio\\intro.wav");
             audioInputStream = AudioSystem.getAudioInputStream(soundFile);
-        } catch (UnsupportedAudioFileException ue) {
-            System.out.println("Archivo incorrecto");
-        } catch (IOException e) {
-            System.out.println("Error inesperado");
-        }
-        try {
             clip = AudioSystem.getClip();
             clip.open(audioInputStream);
             clip.start();
-            clip.loop(Clip.LOOP_CONTINUOUSLY); //Para el el audio se ejecute en bucle
+            clip.loop(Clip.LOOP_CONTINUOUSLY);
             FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
             float dB = (float) (Math.log10(0.5) * 35.0);
             gainControl.setValue(dB);
-        } catch (LineUnavailableException l) {
-            System.out.println("Error en el audio");
-        } catch (IOException e) {
-            System.out.println("err");
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+            throw new RuntimeException("Error al cargar el audio");
         }
     
-    //Inicia accion de temporizador e indica que cambie de pantalla cuando termine el progreso
-        if(inicio.isEnabled()){
+        // Iniciar acción de temporizador para cambiar de pantalla cuando termine el progreso
+        if (inicio.isEnabled()){
             accion = new Action();
-            temporizador = new Timer(30,accion);
+            temporizador = new Timer(30, accion);
             temporizador.start();
-            if(barra.getValue() == 100){
-                contenedor.setSelectedIndex(1);
-            }
-        }  
-        ultimasPartidas.setOpaque(true);
+        }
     }
     
-    //Inicializar límites del movimiento del botón cuando el JFrame es visible
+    // Inicializar límites del movimiento del botón cuando el JFrame es visible
+    @Override
     public void setVisible(boolean b) {
         super.setVisible(b);
         if (b) {
@@ -103,12 +84,7 @@ private Clip clip;
     
     private void startMoving(int dx, int dy) {
         stopMoving(); // Detener el movimiento actual si hay alguno en curso
-        timer = new Timer(10, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                moveButton(dx * moveAmount, dy * moveAmount);
-            }
-        });
+        timer = new Timer(10, e -> moveButton(dx * moveAmount, dy * moveAmount));
         timer.start();
     }
 
@@ -133,15 +109,15 @@ private Clip clip;
             y = limiteY;
         }
         // Detecta si el boton esta cerca de una coordenada
-        double distancia = Math.sqrt(Math.pow(x - 430, 2) + Math.pow(y - 700, 2));
+        double distancia = Math.sqrt(Math.pow(x - 420, 2) + Math.pow(y - 672, 2));
 
         // Si la distancia es menor que 50, mostrar el JTabbedPane
         if (distancia < 100) {
         contenedor.setSelectedIndex(6);
-
     }
         IconoEntrenador.setLocation(x, y);
     }
+
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -205,7 +181,6 @@ private Clip clip;
         jButton24 = new javax.swing.JButton();
         jButton25 = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
-        jButton2 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
         jButton42 = new javax.swing.JButton();
@@ -227,7 +202,6 @@ private Clip clip;
         jButton40 = new javax.swing.JButton();
         jButton41 = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
-        jButton6 = new javax.swing.JButton();
         jButton7 = new javax.swing.JButton();
         jButton8 = new javax.swing.JButton();
         Enfermeria = new javax.swing.JPanel();
@@ -572,7 +546,7 @@ private Clip clip;
                 IconoEntrenadorKeyReleased(evt);
             }
         });
-        pJuego.add(IconoEntrenador, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 310, -1, -1));
+        pJuego.add(IconoEntrenador, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 80, -1, -1));
 
         jLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/mapa.jpg"))); // NOI18N
         jLabel9.setMaximumSize(new java.awt.Dimension(1000, 500));
@@ -644,14 +618,6 @@ private Clip clip;
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setText("Mochila");
         jPanel2.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(233, 36, 194, 60));
-
-        jButton2.setText("Transferir");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-        jPanel2.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 670, -1, -1));
 
         jButton4.setText("Usar");
         jButton4.addActionListener(new java.awt.event.ActionListener() {
@@ -735,14 +701,6 @@ private Clip clip;
         jLabel3.setText("Pokeñon");
         jPanel3.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(233, 36, 194, 60));
 
-        jButton6.setText("Transferir");
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
-            }
-        });
-        jPanel3.add(jButton6, new org.netbeans.lib.awtextra.AbsoluteConstraints(185, 672, -1, -1));
-
         jButton7.setText("Usar");
         jButton7.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -771,7 +729,7 @@ private Clip clip;
         );
         EnfermeriaLayout.setVerticalGroup(
             EnfermeriaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 770, Short.MAX_VALUE)
         );
 
         contenedor.addTab("tab7", Enfermeria);
@@ -949,7 +907,8 @@ private Clip clip;
     }//GEN-LAST:event_IconoEntrenadorKeyPressed
 
     private void IconoEntrenadorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_IconoEntrenadorActionPerformed
-        // TODO add your handling code here:
+        Pokeñon pokeñon = new Pokeñon();
+        pokeñon.getTipo()
     }//GEN-LAST:event_IconoEntrenadorActionPerformed
 
     private void jButton42ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton42ActionPerformed
@@ -964,10 +923,6 @@ private Clip clip;
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton7ActionPerformed
 
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton6ActionPerformed
-
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton5ActionPerformed
@@ -975,10 +930,6 @@ private Clip clip;
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton4ActionPerformed
-
-//GEN-FIRST:event_jButton2ActionPerformed
- 
-//GEN-LAST:event_jButton2ActionPerformed
 //Clase interna de Action que contiene un metodo que aumenta el valor de la barra
     public class Action implements ActionListener{
         int i = 0;
@@ -1053,7 +1004,6 @@ private Clip clip;
     private javax.swing.JButton jButton17;
     private javax.swing.JButton jButton18;
     private javax.swing.JButton jButton19;
-    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton20;
     private javax.swing.JButton jButton21;
     private javax.swing.JButton jButton22;
@@ -1079,7 +1029,6 @@ private Clip clip;
     private javax.swing.JButton jButton41;
     private javax.swing.JButton jButton42;
     private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
     private javax.swing.JButton jButton9;

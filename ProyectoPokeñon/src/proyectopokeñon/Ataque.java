@@ -1,48 +1,43 @@
+
 package proyectopokeñon;
 
 public class Ataque {
-    // Atributos
-    private tipo type;
-    private double danno;
-    private String name;
+    private double daño;
+    private Tipo tipo;
+    private String nombre;
+
+    public Ataque(double daño, Tipo tipo, String nombre) {
+        this.daño = daño;
+        this.tipo = tipo;
+        this.nombre = nombre;
+    }
     
-    // Métodos y constructores
-
-    public Ataque(tipo type, double danno, String name) {
-        this.type = type;
-        this.danno = danno;
-        this.name = name;
-    }
-    public Ataque(tipo type, double danno) {
-        this(type,danno,"Ataque Desconocido");
-    }
-    public tipo getType() {
-        return type;
-    }
-
-    public void setType(tipo type) {
-        this.type = type;
-    }
-
-    public double getDanno() {
-        return danno;
-    }
-
-    public void setDanno(double danno) {
-        if(danno<=0){
-            danno=1;
-        }
-        this.danno = danno;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
+    public Ataque() {
         
-        this.name = name;
     }
-    
+
+    public double getDaño() {
+        return daño;
+    }
+
+    public void setDaño(double daño) {
+        this.daño = daño;
+    }
+
+    public Tipo getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(Tipo tipo) {
+        this.tipo = tipo;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
     
 }
