@@ -18,6 +18,7 @@ import java.io.ObjectOutputStream;
  * @author Ismael
  */
 public class Acciones extends JFrame{
+    
     Pokeñon pokeñon;
     
     public void atacar(Ataques ataque, Pokeñon otroPokeñon) {
@@ -67,5 +68,25 @@ public class Acciones extends JFrame{
         partida = (Personaje) in.readObject();
         in.close();
         return partida;
+    }
+    
+    public static void AñadirPokemon(Personaje personaje, Pokeñon pokeñon){
+        if(personaje.getPokeñons().size() < 16){
+            personaje.getPokeñons().add(pokeñon);    
+        }
+    }
+    
+    public static void SoltarPokemon(Personaje personaje, int indice){
+        personaje.getPokeñons().remove(indice);
+    }
+    
+    public static void AñadirObjetos(Personaje personaje, Objetos objeto){
+        if(personaje.getObjetos().size() < 16){
+            personaje.getObjetos().add(objeto);    
+        }
+    }
+    
+    public static void SoltarObjetos(Personaje personaje, int indice){
+        personaje.getObjetos().remove(indice);
     }
 }

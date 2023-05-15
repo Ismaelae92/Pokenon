@@ -11,19 +11,22 @@ public class Personaje implements Serializable {
     
 
     public Personaje(List<Objetos> objetos, List<Pokeñon> pokeñons,String nombre) {
-        this.objetos = new ArrayList<Objetos>(16);
-        this.pokeñon = new ArrayList<Pokeñon>(16);
+        this.objetos = new ArrayList<Objetos>();
+        this.pokeñon = new ArrayList<Pokeñon>();
         this.nombreUsuario = nombreUsuario;
     }
     
-    public Personaje(List<Pokeñon> pokeñons,String nombre) {
+    public Personaje(List<Pokeñon> pokeñons) {
         this.pokeñon = new ArrayList<Pokeñon>(16);
+    }
+    
+    public Personaje(String nombre) {
         this.nombreUsuario = nombre;
     }
     
-    
     public Personaje() {
-        
+        objetos = new ArrayList<Objetos>();
+        pokeñon = new ArrayList<Pokeñon>();
     }
 
     public List<Objetos> getObjetos() {
