@@ -35,6 +35,7 @@ public enum Pokeñon {
     SWELLOW("Swellow", Tipo.VOLADOR, 60, 85, "src\\imagenes\\bulbasur.png"),
     TALONFLAME("Talonflame", Tipo.VOLADOR, 78, 81, "src\\imagenes\\bulbasur.png");
     
+    private static final int saludMax = 200; 
     private String nombre;
     private Tipo tipo;
     private double fuerza;
@@ -42,6 +43,11 @@ public enum Pokeñon {
     private String url;
 
     Pokeñon(String nombre, Tipo tipo, int fuerza, int salud, String url) {
+        if(salud>saludMax){
+            salud=saludMax;
+        } else if (salud<0){
+            salud=0;
+        } 
         this.nombre = nombre;
         this.tipo = tipo;
         this.fuerza = fuerza;
@@ -73,11 +79,19 @@ public enum Pokeñon {
         this.tipo = tipo;
     }
 
-    public void setFuerza(int fuerza) {
+    public void setFuerza(double fuerza) {
+        if(fuerza<=0){
+            fuerza=1;
+        }
         this.fuerza = fuerza;
     }
 
     public void setSalud(double salud) {
+        if(salud>saludMax){
+            salud=saludMax;
+        } else if (salud<0){
+            salud=0;
+        } 
         this.salud = salud;
     }
 
@@ -91,7 +105,7 @@ public enum Pokeñon {
 
     @Override
     public String toString() {
-        return  nombre + ":         " + tipo + ":         " + fuerza + ":         " + salud;
+        return  nombre + "; Tipo: " + tipo + "; Fuerza: " + fuerza + "; Salud: " + salud;
     }
     
     

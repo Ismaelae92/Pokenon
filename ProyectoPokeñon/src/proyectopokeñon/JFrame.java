@@ -44,7 +44,7 @@ import javax.swing.table.DefaultTableModel;
  * @author Ismael
  */
 public class JFrame extends javax.swing.JFrame {
-    
+
     private Clip clip;
     private AudioInputStream audioInputStream;
     private int x, y;
@@ -52,35 +52,35 @@ public class JFrame extends javax.swing.JFrame {
     private Timer timer;
     private int moveAmount = 5;
     private Action accion;
-    int limiteX ;
+    int limiteX;
     int limiteY;
     private static Personaje personaje;
     private Pokeñon pokeñon;
     private Objetos objetos;
-    
-    public JFrame(){
+
+    public JFrame() {
         initComponents();
-    //Bloquea todas las pestañas
+        //Bloquea todas las pestañas
         contenedor.setEnabledAt(0, false);
         contenedor.setEnabledAt(1, false);
         contenedor.setEnabledAt(2, false);
         contenedor.setEnabledAt(3, false);
         contenedor.setEnabledAt(4, false);
-    //Para que habra la aplicacion a pantalla completa y maximizada
+        //Para que habra la aplicacion a pantalla completa y maximizada
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         setSize(screenSize);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
-        setLocationRelativeTo(null); 
-    
-    //Inicia accion de temporizador e indica que cambie de pantalla cuando termine el progreso
-        if(inicio.isEnabled()){
+        setLocationRelativeTo(null);
+
+        //Inicia accion de temporizador e indica que cambie de pantalla cuando termine el progreso
+        if (inicio.isEnabled()) {
             accion = new Action();
-            temporizador = new Timer(30,accion);
+            temporizador = new Timer(30, accion);
             temporizador.start();
-            if(barra.getValue() == 100){
+            if (barra.getValue() == 100) {
                 contenedor.setSelectedIndex(1);
             }
-        }  
+        }
         cargarArchivo.setVisible(false);
         personaje = new Personaje();
         personaje.getObjetos().add(Objetos.MAXPOCION);
@@ -99,10 +99,11 @@ public class JFrame extends javax.swing.JFrame {
         dialogGuardar.setSize(800, 400);
         dialogGuardar.setLocationRelativeTo(this);
         error.setLocationRelativeTo(this);
-        error.setSize(400, 200);;  
-        
+        error.setSize(400, 200);
+        soltarPokeñon.setEnabled(false);
+        soltarObjeto.setEnabled(false);
     }
- 
+
     //Inicializar límites del movimiento del botón cuando el JFrame es visible
     public void setVisible(boolean b) {
         super.setVisible(b);
@@ -111,7 +112,7 @@ public class JFrame extends javax.swing.JFrame {
             limiteY = mapa.getHeight() - IconoEntrenador.getHeight();
         }
     }
-    
+
     public void startMoving(int dx, int dy) {
         stopMoving(); // Detener el movimiento actual si hay alguno en curso
         timer = new Timer(10, new ActionListener() {
@@ -149,10 +150,10 @@ public class JFrame extends javax.swing.JFrame {
         // Si la distancia es menor que 50, mostrar el JTabbedPane
         if (distancia < 100) {
 
-    }
+        }
         IconoEntrenador.setLocation(x, y);
     }
-            
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -199,14 +200,15 @@ public class JFrame extends javax.swing.JFrame {
         pInventario = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        jButton4 = new javax.swing.JButton();
-        soltar = new javax.swing.JButton();
+        usar = new javax.swing.JButton();
+        soltarObjeto = new javax.swing.JButton();
         jButton42 = new javax.swing.JButton();
         guardarPartida = new javax.swing.JButton();
+        imagenPokeñon = new javax.swing.JLabel();
+        imagenMochila = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         listaMochila = new javax.swing.JList<>();
         jLabel5 = new javax.swing.JLabel();
-        imagenes = new javax.swing.JLabel();
         Filtro = new javax.swing.JComboBox<>();
         AscDesc = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
@@ -215,6 +217,7 @@ public class JFrame extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
+        soltarPokeñon = new javax.swing.JButton();
 
         dialogGuardar.setModal(true);
         dialogGuardar.getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -687,21 +690,21 @@ public class JFrame extends javax.swing.JFrame {
         jLabel2.setText("Mochila");
         jPanel2.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(233, 36, 194, 60));
 
-        jButton4.setText("Usar");
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
+        usar.setText("Usar");
+        usar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+                usarActionPerformed(evt);
             }
         });
-        jPanel2.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 670, 80, -1));
+        jPanel2.add(usar, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 670, 80, -1));
 
-        soltar.setText("Soltar");
-        soltar.addActionListener(new java.awt.event.ActionListener() {
+        soltarObjeto.setText("Soltar");
+        soltarObjeto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                soltarActionPerformed(evt);
+                soltarObjetoActionPerformed(evt);
             }
         });
-        jPanel2.add(soltar, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 180, 80, -1));
+        jPanel2.add(soltarObjeto, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 670, 80, -1));
 
         jButton42.setText("Volver al juego");
         jButton42.addActionListener(new java.awt.event.ActionListener() {
@@ -718,6 +721,12 @@ public class JFrame extends javax.swing.JFrame {
             }
         });
         jPanel2.add(guardarPartida, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 130, -1, -1));
+
+        imagenPokeñon.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel2.add(imagenPokeñon, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 300, 150, 140));
+
+        imagenMochila.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel2.add(imagenMochila, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 300, 140, 140));
 
         listaMochila.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         listaMochila.setModel(new javax.swing.AbstractListModel<String>() {
@@ -741,7 +750,6 @@ public class JFrame extends javax.swing.JFrame {
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel5.setText("Pokeñon");
         jPanel2.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(1060, 50, 194, 60));
-        jPanel2.add(imagenes, new org.netbeans.lib.awtextra.AbsoluteConstraints(700, 290, 160, 140));
 
         Filtro.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Filtro", "Nombre", "Tipo", "Fuerza asc", "Fuerza desc", "Salud asc", "Salud desc" }));
         Filtro.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -780,23 +788,31 @@ public class JFrame extends javax.swing.JFrame {
         });
         jScrollPane4.setViewportView(listaPoke);
 
-        jPanel2.add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(960, 140, 400, 460));
+        jPanel2.add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(960, 140, 410, 480));
 
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel3.setText("Nombre");
-        jPanel2.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(960, 120, 90, 20));
+        jPanel2.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(950, 120, 90, 20));
 
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel6.setText("Tipo");
-        jPanel2.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(1050, 120, 90, 20));
+        jPanel2.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(1060, 120, 90, 20));
 
         jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel7.setText("Fuerza");
-        jPanel2.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(1140, 120, 90, 20));
+        jPanel2.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(1180, 120, 90, 20));
 
         jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel8.setText("Salud");
-        jPanel2.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(1230, 120, 90, 20));
+        jPanel2.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(1280, 120, 90, 20));
+
+        soltarPokeñon.setText("Soltar");
+        soltarPokeñon.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                soltarPokeñonActionPerformed(evt);
+            }
+        });
+        jPanel2.add(soltarPokeñon, new org.netbeans.lib.awtextra.AbsoluteConstraints(1120, 670, -1, -1));
 
         pInventario.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1490, 800));
 
@@ -808,19 +824,18 @@ public class JFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
 
-
     private void urlDestinoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_urlDestinoActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_urlDestinoActionPerformed
 
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
-        try{
-            Acciones.guardar(personaje,urlDestino.getText());
-        }catch(IOException e){ 
-           dialogGuardar.dispose();
-           error.setVisible(true);
-           mensajeError.setText(e.getMessage());
-           e.printStackTrace();
+        try {
+            Acciones.guardar(personaje, urlDestino.getText());
+        } catch (IOException e) {
+            dialogGuardar.dispose();
+            error.setVisible(true);
+            mensajeError.setText(e.getMessage());
+            e.printStackTrace();
         }
     }//GEN-LAST:event_saveActionPerformed
 
@@ -840,19 +855,19 @@ public class JFrame extends javax.swing.JFrame {
     private void IconoEntrenadorKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_IconoEntrenadorKeyPressed
         switch (evt.getKeyCode()) {
             case KeyEvent.VK_UP:
-            startMoving(0, -1);
-            break;
+                startMoving(0, -1);
+                break;
             case KeyEvent.VK_DOWN:
-            startMoving(0, 1);
-            break;
+                startMoving(0, 1);
+                break;
             case KeyEvent.VK_LEFT:
-            startMoving(-1, 0);
-            break;
+                startMoving(-1, 0);
+                break;
             case KeyEvent.VK_RIGHT:
-            startMoving(1, 0);
-            break;
+                startMoving(1, 0);
+                break;
             default:
-            break;
+                break;
         }
     }//GEN-LAST:event_IconoEntrenadorKeyPressed
 
@@ -865,7 +880,7 @@ public class JFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_pSeleccionMouseEntered
 
     private void insertarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_insertarUsuarioActionPerformed
-        
+
     }//GEN-LAST:event_insertarUsuarioActionPerformed
 
     private void nSquirtleMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_nSquirtleMouseClicked
@@ -941,11 +956,11 @@ public class JFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_pMenuMouseClicked
 
     private void cargarArchivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cargarArchivoActionPerformed
-        try{
+        try {
             personaje = Acciones.cargar(cargarArchivo.getSelectedFile());
             cargarArchivo.setVisible(false);
             contenedor.setSelectedIndex(3);
-        }catch(IOException e){
+        } catch (IOException e) {
             error.setVisible(true);
             mensajeError.setText(e.getMessage());
         } catch (ClassNotFoundException ex) {
@@ -961,7 +976,7 @@ public class JFrame extends javax.swing.JFrame {
             clip.stop();
             jSlider1.setVisible(false);
             jButton9.setText("Reproducir");
-        }else if(!clip.isRunning()){
+        } else if (!clip.isRunning()) {
             clip.start();
             jSlider1.setVisible(true);
             jButton9.setText("Detener");
@@ -997,7 +1012,7 @@ public class JFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_insertarUsuarioKeyPressed
 
     private void irJuegoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_irJuegoActionPerformed
-        if(!insertarUsuario.getText().isBlank()){
+        if (!insertarUsuario.getText().isBlank()) {
             personaje.setNombreUsuario(insertarUsuario.getText());
             contenedor.setSelectedIndex(3);
         }
@@ -1007,14 +1022,14 @@ public class JFrame extends javax.swing.JFrame {
         DefaultListModel modelMochila = new DefaultListModel();
         modelMochila.addAll(personaje.getObjetos());
         listaMochila.setModel(modelMochila);
-        DefaultListModel modelPoke = new DefaultListModel(); 
+        DefaultListModel modelPoke = new DefaultListModel();
         modelPoke.addAll(personaje.getPokeñons());
         listaPoke.setModel(modelPoke);
         contenedor.setSelectedIndex(4);
     }//GEN-LAST:event_irInventarioActionPerformed
 
     private void barraStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_barraStateChanged
-        if(barra.getValue()==99){
+        if (barra.getValue() == 99) {
             File soundFile = new File("src\\audio\\intro.wav");
             try {
                 audioInputStream = AudioSystem.getAudioInputStream(soundFile);
@@ -1047,58 +1062,97 @@ public class JFrame extends javax.swing.JFrame {
         contenedor.setSelectedIndex(3);
     }//GEN-LAST:event_jButton42ActionPerformed
 
-    private void soltarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_soltarActionPerformed
-        DefaultListModel listaPokeñon = new DefaultListModel();
+    private void soltarObjetoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_soltarObjetoActionPerformed
         DefaultListModel listaObjetos = new DefaultListModel();
-        JList<String> listaObjeto = new JList<>(listaObjetos); 
-        JList<String> listaPokenon = new JList<>(listaPokeñon); 
-        if(listaMochila.getSelectedIndex() != -1){
-           Acciones.SoltarObjetos(personaje, listaObjeto.getSelectedIndex());    
-       }
-    }//GEN-LAST:event_soltarActionPerformed
+        if (listaMochila.getSelectedIndex() != -1) {
+            personaje.getObjetos().remove(listaMochila.getSelectedIndex());
+        }
+        listaObjetos.addAll(personaje.getObjetos());
+        listaMochila.setModel(listaObjetos);
+        soltarObjeto.setEnabled(false);
+    }//GEN-LAST:event_soltarObjetoActionPerformed
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+    private void usarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_usarActionPerformed
+        if(listaMochila.getSelectedIndex()!=-1){
+            Objetos o = personaje.getObjetos().get(listaMochila.getSelectedIndex());
+            if (o.getNombre() == "Poción") {
+                if (listaPoke.getSelectedIndex() != -1) {
+                    personaje.getPokeñons().get(listaPoke.getSelectedIndex())
+                            .setSalud((personaje.getPokeñons().get(listaPoke.getSelectedIndex()).getSalud() + 20));
+                } else {
+                    System.out.println("Introducir una ventana para mostrara error");
+                }
+            } else if (o.getNombre() == "Superpoción") {
+                if (listaPoke.getSelectedIndex() != -1) {
+                    personaje.getPokeñons().get(listaPoke.getSelectedIndex())
+                            .setSalud((personaje.getPokeñons().get(listaPoke.getSelectedIndex()).getSalud() + 50));
+                } else {
+                    System.out.println("Introducir una ventana para mostrara error");
+                }
+            } else if (o.getNombre() == "Maxpoción") {
+                if (listaPoke.getSelectedIndex() != -1) {
+                    personaje.getPokeñons().get(listaPoke.getSelectedIndex())
+                            .setSalud(200);
+                } else {
+                    System.out.println("Introducir una ventana para mostrara error");
+                }
+            } else if (o.getNombre() == "Potenciador de ataque") {
 
-    }//GEN-LAST:event_jButton4ActionPerformed
+            } else if (o.getNombre() == "Potenciador de defensa") {
+                if (listaPoke.getSelectedIndex() != -1) {
+                    personaje.getPokeñons().get(listaPoke.getSelectedIndex())
+                            .setFuerza((personaje.getPokeñons().get(listaPoke.getSelectedIndex()).getFuerza() * 1.5));
+                } else {
+                    System.out.println("Introducir una ventana para mostrara error");
+                }
+            } else if (o.getNombre() == "Ticket de enfermería") {
+                System.out.println("Va a la enfermería");
+            }
+        }
+        DefaultListModel modelPoke = new DefaultListModel();
+        modelPoke.addAll(personaje.getPokeñons());
+        listaPoke.repaint();
+        soltarObjetoActionPerformed(null);
+    }//GEN-LAST:event_usarActionPerformed
 
     private void listaMochilaFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_listaMochilaFocusGained
         ImageIcon icono = new ImageIcon(personaje.getObjetos().get(listaMochila.getSelectedIndex()).getUrl());
-        imagenes.setIcon(icono);
-        soltar.setVisible(true);
+        imagenMochila.setIcon(icono);
+        soltarObjeto.setEnabled(true);
     }//GEN-LAST:event_listaMochilaFocusGained
 
     private void listaMochilaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_listaMochilaFocusLost
-        soltar.setVisible(false);
+
     }//GEN-LAST:event_listaMochilaFocusLost
 
     private void FiltroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FiltroActionPerformed
-        if(Filtro.getSelectedIndex() == 1){
-            Collections.sort(personaje.getPokeñons(), Comparator.comparing(Pokeñon::getNombre));  
-        }else if(Filtro.getSelectedIndex() == 2){
-            Collections.sort(personaje.getPokeñons(), Comparator.comparing(Pokeñon::getTipo));   
-        }else if (Filtro.getSelectedIndex() == 3){
-            Collections.sort(personaje.getPokeñons(), Comparator.comparing(Pokeñon::getFuerza));   
-        }else if (Filtro.getSelectedIndex() == 4){
+        if (Filtro.getSelectedIndex() == 1) {
+            Collections.sort(personaje.getPokeñons(), Comparator.comparing(Pokeñon::getNombre));
+        } else if (Filtro.getSelectedIndex() == 2) {
+            Collections.sort(personaje.getPokeñons(), Comparator.comparing(Pokeñon::getTipo));
+        } else if (Filtro.getSelectedIndex() == 3) {
+            Collections.sort(personaje.getPokeñons(), Comparator.comparing(Pokeñon::getFuerza));
+        } else if (Filtro.getSelectedIndex() == 4) {
             Collections.sort(personaje.getPokeñons(), Comparator.comparing(Pokeñon::getFuerza, Collections.reverseOrder()));
-        }else if (Filtro.getSelectedIndex() == 5){
+        } else if (Filtro.getSelectedIndex() == 5) {
             Collections.sort(personaje.getPokeñons(), Comparator.comparing(Pokeñon::getSalud));
-        }else if (Filtro.getSelectedIndex() == 6){ 
+        } else if (Filtro.getSelectedIndex() == 6) {
             Collections.sort(personaje.getPokeñons(), Comparator.comparing(Pokeñon::getSalud, Collections.reverseOrder()));
         }
-        DefaultListModel modelPoke = new DefaultListModel(); 
+        DefaultListModel modelPoke = new DefaultListModel();
         modelPoke.addAll(personaje.getPokeñons());
         listaPoke.setModel(modelPoke);
     }//GEN-LAST:event_FiltroActionPerformed
 
     private void AscDescActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AscDescActionPerformed
-        if(AscDesc.getText() == "Ascendente"){
+        if (AscDesc.getText() == "Ascendente") {
             Collections.sort(personaje.getObjetos(), Comparator.comparing(Objetos::getNombre));
             AscDesc.setText("Descendente");
             DefaultListModel modelMochila = new DefaultListModel();
             modelMochila.addAll(personaje.getObjetos());
             listaMochila.setModel(modelMochila);
-        }else{
-            Collections.sort(personaje.getObjetos(), Comparator.comparing(Objetos::getNombre,Collections.reverseOrder()));
+        } else {
+            Collections.sort(personaje.getObjetos(), Comparator.comparing(Objetos::getNombre, Collections.reverseOrder()));
             AscDesc.setText("Ascendente");
             DefaultListModel modelMochila = new DefaultListModel();
             modelMochila.addAll(personaje.getObjetos());
@@ -1107,32 +1161,46 @@ public class JFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_AscDescActionPerformed
 
     private void FiltroFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_FiltroFocusGained
-        
+
     }//GEN-LAST:event_FiltroFocusGained
 
     private void listaPokeFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_listaPokeFocusGained
         ImageIcon icono = new ImageIcon(personaje.getPokeñons().get(listaPoke.getSelectedIndex()).getUrl());
-        imagenes.setIcon(icono);
-        soltar.setVisible(true);
+        imagenPokeñon.setIcon(icono);
+        soltarPokeñon.setEnabled(true);
     }//GEN-LAST:event_listaPokeFocusGained
 
     private void listaPokeFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_listaPokeFocusLost
-        soltar.setVisible(false);
+
     }//GEN-LAST:event_listaPokeFocusLost
+
+    private void soltarPokeñonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_soltarPokeñonActionPerformed
+        DefaultListModel listaP = new DefaultListModel();
+        if (listaPoke.getSelectedIndex() != -1) {
+            personaje.getPokeñons().remove(listaPoke.getSelectedIndex());
+        }
+        listaP.addAll(personaje.getPokeñons());
+        listaPoke.setModel(listaP);
+        soltarPokeñon.setEnabled(false);
+    }//GEN-LAST:event_soltarPokeñonActionPerformed
 //Clase interna de Action que contiene un metodo que aumenta el valor de la barra
-    public class Action implements ActionListener{
+
+    public class Action implements ActionListener {
+
         int i = 0;
+
         public void actionPerformed(ActionEvent e) {
             barra.setValue(i);
-            if(i < 100){
+            if (i < 100) {
                 i++;
                 porcentajeBarra.setText(i + "%");
-            }else{
+            } else {
                 contenedor.setSelectedIndex(1);
                 temporizador.stop();
-            }           
+            }
         }
     }
+
     /**
      * @param args the command line arguments
      */
@@ -1182,12 +1250,12 @@ public class JFrame extends javax.swing.JFrame {
     public javax.swing.JDialog dialogGuardar;
     public javax.swing.JDialog error;
     public javax.swing.JButton guardarPartida;
-    public javax.swing.JLabel imagenes;
+    public javax.swing.JLabel imagenMochila;
+    public javax.swing.JLabel imagenPokeñon;
     public javax.swing.JPanel inicio;
     public javax.swing.JTextField insertarUsuario;
     public javax.swing.JButton irInventario;
     public javax.swing.JButton irJuego;
-    public javax.swing.JButton jButton4;
     public javax.swing.JButton jButton42;
     public javax.swing.JButton jButton9;
     public javax.swing.JLabel jLabel1;
@@ -1223,9 +1291,11 @@ public class JFrame extends javax.swing.JFrame {
     public javax.swing.JButton pikachu;
     public javax.swing.JLabel porcentajeBarra;
     public javax.swing.JButton save;
-    public javax.swing.JButton soltar;
+    public javax.swing.JButton soltarObjeto;
+    public javax.swing.JButton soltarPokeñon;
     public javax.swing.JButton squirtle;
     public javax.swing.JTextField urlDestino;
+    public javax.swing.JButton usar;
     public javax.swing.JButton volverAlMenu3;
     // End of variables declaration//GEN-END:variables
 }

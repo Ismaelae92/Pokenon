@@ -11,15 +11,15 @@ import java.util.Comparator;
  * @author Ismael
  */
 public enum Objetos implements Comparator<Objetos>{
-    POKEBALL("Pokeball", "Captura a un Pokémon",""),
-    SUPERBALL("Superball", "Captura a un Pokémon más fácilmente",""),
-    ULTRABALL("Ultraball", "Captura a un Pokémon con mayor facilidad",""),
-    POCION("Poción", "Restaura 20 puntos de salud de un Pokémon",""),
-    SUPERPOCION("Superpoción", "Restaura 50 puntos de salud de un Pokémon",""),
-    MAXPOCION("Maxpoción", "Restaura todo los puntos de salud de un Pokémon",""),
-    POTENCIADOR_ATQ("Potenciador de ataque", "Aumenta el ataque de un Pokémon en un 50%",""),
-    POTECIADOR_DEF("Potenciador de defensa", "Aumenta la defensa de un Pokémon en un 50%",""),
-    TICKET_ENFERMERIA("Ticket de enfermería", "Restaura todos los puntos de salud de todos los Pokémon del equipo","");
+    POKEBALL("Pokeball", "Captura a un Pokémon","src\\imagenes\\squirtle.png"),
+    SUPERBALL("Superball", "Captura a un Pokémon más fácilmente","src\\imagenes\\squirtle.png"),
+    ULTRABALL("Ultraball", "Captura a un Pokémon con mayor facilidad","src\\imagenes\\squirtle.png"),
+    POCION("Poción", "Restaura 20 puntos de salud de un Pokémon","src\\imagenes\\squirtle.png"),
+    SUPERPOCION("Superpoción", "Restaura 50 puntos de salud de un Pokémon","src\\imagenes\\squirtle.png"),
+    MAXPOCION("Maxpoción", "Restaura todo los puntos de salud de un Pokémon","\\src\\imagenes\\squirtle.png"),
+    POTENCIADOR_ATQ("Potenciador de ataque", "Aumenta el ataque de un Pokémon en un 50%","src\\imagenes\\squirtle.png"),
+    POTECIADOR_DEF("Potenciador de defensa", "Aumenta la defensa de un Pokémon en un 50%","src\\imagenes\\squirtle.png"),
+    TICKET_ENFERMERIA("Ticket de enfermería", "Restaura todos los puntos de salud de todos los Pokémon del equipo","src\\imagenes\\squirtle.png");
 
     private String nombre;
     private String descripcion;
