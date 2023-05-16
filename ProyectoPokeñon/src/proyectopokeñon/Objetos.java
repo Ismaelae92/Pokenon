@@ -4,11 +4,13 @@
  */
 package proyectopokeñon;
 
+import java.util.Comparator;
+
 /**
  *
  * @author Ismael
  */
-public enum Objetos {
+public enum Objetos implements Comparator<Objetos>{
     POKEBALL("Pokeball", "Captura a un Pokémon",""),
     SUPERBALL("Superball", "Captura a un Pokémon más fácilmente",""),
     ULTRABALL("Ultraball", "Captura a un Pokémon con mayor facilidad",""),
@@ -21,13 +23,11 @@ public enum Objetos {
 
     private String nombre;
     private String descripcion;
-    private int valor;
     private String url;
 
     Objetos(String nombre, String descripcion, String url) {
         this.nombre = nombre;
         this.descripcion = descripcion;
-        this.valor = valor;
     }
 
     public String getNombre() {
@@ -38,14 +38,12 @@ public enum Objetos {
         return descripcion;
     }
 
-    public int getValor() {
-        return valor;
-    }
-
     public String getUrl() {
         return url;
     }
-    
-    
-    
+
+    @Override
+    public int compare(Objetos o1, Objetos o2) {
+        return o1.getNombre().compareTo(o2.getNombre());
+    }  
 }

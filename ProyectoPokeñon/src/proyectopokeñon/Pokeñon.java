@@ -4,6 +4,8 @@
  */
 package proyectopokeñon;
 
+import java.util.Comparator;
+
 /**
  *
  * @author Ismael
@@ -85,8 +87,12 @@ public enum Pokeñon {
 
     public String getUrl() {
         return url;
+    } 
+
+    @Override
+    public String toString() {
+        return  nombre + ":         " + tipo + ":         " + fuerza + ":         " + salud;
     }
-    
     
     
 }

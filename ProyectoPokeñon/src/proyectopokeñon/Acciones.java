@@ -17,7 +17,7 @@ import java.io.ObjectOutputStream;
  *
  * @author Ismael
  */
-public class Acciones extends JFrame{
+public class Acciones extends JFrame {
     
     Pokeñon pokeñon;
     
