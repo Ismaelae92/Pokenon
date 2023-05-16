@@ -17,8 +17,8 @@ public enum Objetos implements Comparator<Objetos>{
     POCION("Poción", "Restaura 20 puntos de salud de un Pokémon",""),
     SUPERPOCION("Superpoción", "Restaura 50 puntos de salud de un Pokémon",""),
     MAXPOCION("Maxpoción", "Restaura todo los puntos de salud de un Pokémon",""),
-    ATQ_PLUS("Potenciador de ataque", "Aumenta el ataque de un Pokémon en un 50%",""),
-    DEF_PLUS("Potenciador de defensa", "Aumenta la defensa de un Pokémon en un 50%",""),
+    POTENCIADOR_ATQ("Potenciador de ataque", "Aumenta el ataque de un Pokémon en un 50%",""),
+    POTECIADOR_DEF("Potenciador de defensa", "Aumenta la defensa de un Pokémon en un 50%",""),
     TICKET_ENFERMERIA("Ticket de enfermería", "Restaura todos los puntos de salud de todos los Pokémon del equipo","");
 
     private String nombre;
@@ -44,6 +44,9 @@ public enum Objetos implements Comparator<Objetos>{
 
     @Override
     public int compare(Objetos o1, Objetos o2) {
-        return o1.getNombre().compareTo(o2.getNombre());
-    }  
+       return o1.getNombre().compareToIgnoreCase(o2.getNombre());
+    }
+
+    
+
 }

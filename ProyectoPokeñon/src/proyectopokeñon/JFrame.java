@@ -15,6 +15,7 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -83,8 +84,8 @@ public class JFrame extends javax.swing.JFrame {
         cargarArchivo.setVisible(false);
         personaje = new Personaje();
         personaje.getObjetos().add(Objetos.MAXPOCION);
-        personaje.getObjetos().add(Objetos.ATQ_PLUS);
-        personaje.getObjetos().add(Objetos.DEF_PLUS);
+        personaje.getObjetos().add(Objetos.POTECIADOR_DEF);
+        personaje.getObjetos().add(Objetos.POTENCIADOR_ATQ);
         personaje.getObjetos().add(Objetos.POCION);
         personaje.getObjetos().add(Objetos.POKEBALL);
         personaje.getObjetos().add(Objetos.SUPERBALL);
@@ -99,7 +100,7 @@ public class JFrame extends javax.swing.JFrame {
         dialogGuardar.setLocationRelativeTo(this);
         error.setLocationRelativeTo(this);
         error.setSize(400, 200);;  
-        listaPoke.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        
     }
  
     //Inicializar límites del movimiento del botón cuando el JFrame es visible
@@ -207,9 +208,13 @@ public class JFrame extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         imagenes = new javax.swing.JLabel();
         Filtro = new javax.swing.JComboBox<>();
-        jButton1 = new javax.swing.JButton();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        listaPoke = new javax.swing.JTable();
+        AscDesc = new javax.swing.JButton();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        listaPoke = new javax.swing.JList<>();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
 
         dialogGuardar.setModal(true);
         dialogGuardar.getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -575,7 +580,7 @@ public class JFrame extends javax.swing.JFrame {
                         .addComponent(jLabel11)
                         .addGap(8, 8, 8)
                         .addComponent(insertarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 170, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 230, Short.MAX_VALUE)
                 .addGroup(pSeleccionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(volverAlMenu3, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(irJuego, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -714,6 +719,7 @@ public class JFrame extends javax.swing.JFrame {
         });
         jPanel2.add(guardarPartida, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 130, -1, -1));
 
+        listaMochila.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         listaMochila.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
@@ -735,7 +741,7 @@ public class JFrame extends javax.swing.JFrame {
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel5.setText("Pokeñon");
         jPanel2.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(1060, 50, 194, 60));
-        jPanel2.add(imagenes, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 290, 160, 140));
+        jPanel2.add(imagenes, new org.netbeans.lib.awtextra.AbsoluteConstraints(700, 290, 160, 140));
 
         Filtro.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Filtro", "Nombre", "Tipo", "Fuerza asc", "Fuerza desc", "Salud asc", "Salud desc" }));
         Filtro.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -750,41 +756,20 @@ public class JFrame extends javax.swing.JFrame {
         });
         jPanel2.add(Filtro, new org.netbeans.lib.awtextra.AbsoluteConstraints(960, 90, -1, -1));
 
-        jButton1.setText("Ordenar");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        AscDesc.setText("Ascendente");
+        AscDesc.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                AscDescActionPerformed(evt);
             }
         });
-        jPanel2.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 80, -1, -1));
+        jPanel2.add(AscDesc, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 80, -1, -1));
 
-        listaPoke.setAutoCreateRowSorter(true);
-        listaPoke.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Nombre", "Tipo", "Fuerza", "Salud"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
+        listaPoke.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        listaPoke.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
         });
-        listaPoke.setAutoscrolls(false);
-        listaPoke.setColumnSelectionAllowed(false);
-        listaPoke.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        listaPoke.setGridColor(new java.awt.Color(255, 255, 255));
-        listaPoke.setRequestFocusEnabled(false);
-        listaPoke.setRowSelectionAllowed(false);
-        listaPoke.setSelectionBackground(new java.awt.Color(255, 255, 255));
-        listaPoke.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        listaPoke.setShowHorizontalLines(true);
-        listaPoke.getTableHeader().setReorderingAllowed(false);
         listaPoke.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 listaPokeFocusGained(evt);
@@ -793,22 +778,25 @@ public class JFrame extends javax.swing.JFrame {
                 listaPokeFocusLost(evt);
             }
         });
-        listaPoke.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                listaPokeMouseClicked(evt);
-            }
-        });
-        jScrollPane3.setViewportView(listaPoke);
-        listaPoke.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-        if (listaPoke.getColumnModel().getColumnCount() > 0) {
-            listaPoke.getColumnModel().getColumn(0).setResizable(false);
-            listaPoke.getColumnModel().getColumn(1).setResizable(false);
-            listaPoke.getColumnModel().getColumn(2).setResizable(false);
-            listaPoke.getColumnModel().getColumn(3).setResizable(false);
-        }
-        listaPoke.getAccessibleContext().setAccessibleParent(pInventario);
+        jScrollPane4.setViewportView(listaPoke);
 
-        jPanel2.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(960, 130, 410, 470));
+        jPanel2.add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(960, 140, 400, 460));
+
+        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel3.setText("Nombre");
+        jPanel2.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(960, 120, 90, 20));
+
+        jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel6.setText("Tipo");
+        jPanel2.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(1050, 120, 90, 20));
+
+        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel7.setText("Fuerza");
+        jPanel2.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(1140, 120, 90, 20));
+
+        jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel8.setText("Salud");
+        jPanel2.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(1230, 120, 90, 20));
 
         pInventario.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1490, 800));
 
@@ -1016,25 +1004,13 @@ public class JFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_irJuegoActionPerformed
 
     private void irInventarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_irInventarioActionPerformed
-        contenedor.setSelectedIndex(4);
-        DefaultTableModel modelPoke = new DefaultTableModel();
         DefaultListModel modelMochila = new DefaultListModel();
-
-        for (Pokeñon pokeñon : personaje.getPokeñons()) {
-            modelPoke.addRow(new Object[]{pokeñon.getNombre(), pokeñon.getTipo(), pokeñon.getFuerza()});
-        }
         modelMochila.addAll(personaje.getObjetos());
         listaMochila.setModel(modelMochila);
+        DefaultListModel modelPoke = new DefaultListModel(); 
+        modelPoke.addAll(personaje.getPokeñons());
         listaPoke.setModel(modelPoke);
-        soltar.setVisible(false);
-        DefaultTableModel model = new DefaultTableModel(0, 4); 
-            for (Pokeñon pokeñon : personaje.getPokeñons()) {
-                Object[] row = { pokeñon.getNombre(), pokeñon.getTipo(), pokeñon.getFuerza(), pokeñon.getSalud()};
-                model.addRow(row);
-                System.out.println(Arrays.toString(row));
-
-            }
-        listaPoke.setModel(model);
+        contenedor.setSelectedIndex(4);
     }//GEN-LAST:event_irInventarioActionPerformed
 
     private void barraStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_barraStateChanged
@@ -1077,10 +1053,8 @@ public class JFrame extends javax.swing.JFrame {
         JList<String> listaObjeto = new JList<>(listaObjetos); 
         JList<String> listaPokenon = new JList<>(listaPokeñon); 
         if(listaMochila.getSelectedIndex() != -1){
-            Acciones.SoltarObjetos(personaje, listaObjeto.getSelectedIndex());    
-        }else if (listaPoke.getSelectedRow() != -1){
-            Acciones.SoltarPokemon(personaje, listaPokenon.getSelectedIndex());    
-        }
+           Acciones.SoltarObjetos(personaje, listaObjeto.getSelectedIndex());    
+       }
     }//GEN-LAST:event_soltarActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
@@ -1088,7 +1062,7 @@ public class JFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void listaMochilaFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_listaMochilaFocusGained
-        ImageIcon icono = new ImageIcon(personaje.getObjetos().get(listaPoke.getSelectedRow()).getUrl());
+        ImageIcon icono = new ImageIcon(personaje.getObjetos().get(listaMochila.getSelectedIndex()).getUrl());
         imagenes.setIcon(icono);
         soltar.setVisible(true);
     }//GEN-LAST:event_listaMochilaFocusGained
@@ -1111,30 +1085,33 @@ public class JFrame extends javax.swing.JFrame {
         }else if (Filtro.getSelectedIndex() == 6){ 
             Collections.sort(personaje.getPokeñons(), Comparator.comparing(Pokeñon::getSalud, Collections.reverseOrder()));
         }
-        DefaultTableModel model = new DefaultTableModel(0, 4); 
-        for (Pokeñon pokeñon : personaje.getPokeñons()) {
-            Object[] row = { pokeñon.getNombre(), pokeñon.getTipo(), pokeñon.getFuerza(), pokeñon.getSalud()};
-            model.addRow(row);
-            System.out.println(Arrays.toString(row));
-            
-        }
-        listaPoke.setModel(model);
+        DefaultListModel modelPoke = new DefaultListModel(); 
+        modelPoke.addAll(personaje.getPokeñons());
+        listaPoke.setModel(modelPoke);
     }//GEN-LAST:event_FiltroActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if(jButton1.getText() == "Ascendente"){
-            Collections.sort(personaje.getObjetos());    
+    private void AscDescActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AscDescActionPerformed
+        if(AscDesc.getText() == "Ascendente"){
+            Collections.sort(personaje.getObjetos(), Comparator.comparing(Objetos::getNombre));
+            AscDesc.setText("Descendente");
+            DefaultListModel modelMochila = new DefaultListModel();
+            modelMochila.addAll(personaje.getObjetos());
+            listaMochila.setModel(modelMochila);
         }else{
-            Collections.sort((List<Objetos>) personaje.getObjetos(), Collections.reverseOrder());    
+            Collections.sort(personaje.getObjetos(), Comparator.comparing(Objetos::getNombre,Collections.reverseOrder()));
+            AscDesc.setText("Ascendente");
+            DefaultListModel modelMochila = new DefaultListModel();
+            modelMochila.addAll(personaje.getObjetos());
+            listaMochila.setModel(modelMochila);
         }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_AscDescActionPerformed
 
     private void FiltroFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_FiltroFocusGained
-
+        
     }//GEN-LAST:event_FiltroFocusGained
 
     private void listaPokeFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_listaPokeFocusGained
-        ImageIcon icono = new ImageIcon(personaje.getPokeñons().get(listaPoke.getSelectedRow()).getUrl());
+        ImageIcon icono = new ImageIcon(personaje.getPokeñons().get(listaPoke.getSelectedIndex()).getUrl());
         imagenes.setIcon(icono);
         soltar.setVisible(true);
     }//GEN-LAST:event_listaPokeFocusGained
@@ -1142,10 +1119,6 @@ public class JFrame extends javax.swing.JFrame {
     private void listaPokeFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_listaPokeFocusLost
         soltar.setVisible(false);
     }//GEN-LAST:event_listaPokeFocusLost
-
-    private void listaPokeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listaPokeMouseClicked
-
-    }//GEN-LAST:event_listaPokeMouseClicked
 //Clase interna de Action que contiene un metodo que aumenta el valor de la barra
     public class Action implements ActionListener{
         int i = 0;
@@ -1196,6 +1169,7 @@ public class JFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public javax.swing.JButton AscDesc;
     public javax.swing.JComboBox<String> Filtro;
     public javax.swing.JButton IconoEntrenador;
     public javax.swing.JProgressBar barra;
@@ -1213,7 +1187,6 @@ public class JFrame extends javax.swing.JFrame {
     public javax.swing.JTextField insertarUsuario;
     public javax.swing.JButton irInventario;
     public javax.swing.JButton irJuego;
-    public javax.swing.JButton jButton1;
     public javax.swing.JButton jButton4;
     public javax.swing.JButton jButton42;
     public javax.swing.JButton jButton9;
@@ -1222,16 +1195,20 @@ public class JFrame extends javax.swing.JFrame {
     public javax.swing.JLabel jLabel11;
     public javax.swing.JLabel jLabel12;
     public javax.swing.JLabel jLabel2;
+    public javax.swing.JLabel jLabel3;
     public javax.swing.JLabel jLabel4;
     public javax.swing.JLabel jLabel5;
+    public javax.swing.JLabel jLabel6;
+    public javax.swing.JLabel jLabel7;
+    public javax.swing.JLabel jLabel8;
     public javax.swing.JPanel jPanel1;
     public javax.swing.JPanel jPanel2;
     public javax.swing.JPanel jPanel7;
     public javax.swing.JScrollPane jScrollPane1;
-    public javax.swing.JScrollPane jScrollPane3;
+    public javax.swing.JScrollPane jScrollPane4;
     public javax.swing.JSlider jSlider1;
     public javax.swing.JList<String> listaMochila;
-    public javax.swing.JTable listaPoke;
+    public javax.swing.JList<String> listaPoke;
     public javax.swing.JLabel mapa;
     public javax.swing.JLabel mensajeError;
     public javax.swing.JLabel nBulbasur;
