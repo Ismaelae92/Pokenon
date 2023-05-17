@@ -5,19 +5,14 @@
 package proyectopokeñon;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -30,14 +25,8 @@ import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.DefaultListModel;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JDialog;
-import javax.swing.JList;
-import javax.swing.ListSelectionModel;
-import javax.swing.SwingUtilities;
 import javax.swing.Timer;
-import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -56,7 +45,10 @@ public class JFrame extends javax.swing.JFrame {
     int limiteY;
     private static Personaje personaje;
     private Pokeñon pokeñon;
-    private Objetos objetos;
+    public List<Objetos> objetosRandom;
+    public List<Pokeñon> pokeñonRandom;
+    private Pokeñon aliado;
+    private Pokeñon pokeñonAleatorioRival;
 
     public JFrame() {
         initComponents();
@@ -66,16 +58,17 @@ public class JFrame extends javax.swing.JFrame {
         contenedor.setEnabledAt(2, false);
         contenedor.setEnabledAt(3, false);
         contenedor.setEnabledAt(4, false);
+        contenedor.setEnabledAt(5, false);
         //Para que habra la aplicacion a pantalla completa y maximizada
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         setSize(screenSize);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setLocationRelativeTo(null);
-
+        
         //Inicia accion de temporizador e indica que cambie de pantalla cuando termine el progreso
         if (inicio.isEnabled()) {
             accion = new Action();
-            temporizador = new Timer(30, accion);
+            temporizador = new Timer(10, accion);
             temporizador.start();
             if (barra.getValue() == 100) {
                 contenedor.setSelectedIndex(1);
@@ -83,18 +76,17 @@ public class JFrame extends javax.swing.JFrame {
         }
         cargarArchivo.setVisible(false);
         personaje = new Personaje();
-        personaje.getObjetos().add(Objetos.MAXPOCION);
-        personaje.getObjetos().add(Objetos.POTENCIADOR_ATQ);
-        personaje.getObjetos().add(Objetos.POCION);
-        personaje.getObjetos().add(Objetos.POKEBALL);
-        personaje.getObjetos().add(Objetos.SUPERBALL);
-        personaje.getObjetos().add(Objetos.TICKET_ENFERMERIA);
-        personaje.getObjetos().add(Objetos.ULTRABALL);
-        personaje.getPokeñons().add(Pokeñon.FEAROW);
-        personaje.getPokeñons().add(Pokeñon.JOLTIK);
-        personaje.getPokeñons().add(Pokeñon.LANTURN);
-        personaje.getPokeñons().add(Pokeñon.PYROAR);
-        personaje.getPokeñons().add(Pokeñon.EXEGGUTOR);
+        objetosRandom = new ArrayList();
+        pokeñonRandom = new ArrayList();
+        //Rellena listas random iniciales
+        for (Objetos objeto : Objetos.values()) {
+            objetosRandom.add(objeto);
+        }
+        
+        for (Pokeñon objeto : Pokeñon.values()) {
+            pokeñonRandom.add(objeto);
+        }
+        
         dialogGuardar.setSize(800, 400);
         dialogGuardar.setLocationRelativeTo(this);
         error.setLocationRelativeTo(this);
@@ -103,7 +95,6 @@ public class JFrame extends javax.swing.JFrame {
         soltarObjeto.setEnabled(false);
     }
 
-    //Inicializar límites del movimiento del botón cuando el JFrame es visible
     public void setVisible(boolean b) {
         super.setVisible(b);
         if (b) {
@@ -117,7 +108,9 @@ public class JFrame extends javax.swing.JFrame {
         timer = new Timer(10, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                moveButton(dx * moveAmount, dy * moveAmount);
+                if (!EncuentraObjeto.isVisible()) { // Verificar si la ventana EncuentraObjeto no está visible
+                    moveButton(dx * moveAmount, dy * moveAmount);
+                }
             }
         });
         timer.start();
@@ -143,39 +136,68 @@ public class JFrame extends javax.swing.JFrame {
         } else if (y > limiteY) {
             y = limiteY;
         }
-
-        // Verificar si se ha movido lo suficiente antes de activar setSelectedIndex(4)
-        if (Math.abs(dx) >= 2 || Math.abs(dy) >= 2) {
-            // Detectar si el botón está cerca de una coordenada
-            double posicionObjetos = Math.sqrt(Math.pow(x - (int) (Math.random() * (1516)), 2) + Math.pow(y - (int) (Math.random() * (764)), 2));
-
-            // Si la distancia es menor que 80, mostrar el JTabbedPane
-            if (posicionObjetos < 100) {
-                EncuentraObjeto.setVisible(true);
-
-            // Obtener un índice aleatorio dentro del rango válido
-            int randomIndex = (int) (Math.random() * personaje.getObjetos().size());
-
-            // Obtener el objeto correspondiente al índice aleatorio
-            Object objeto = personaje.getObjetos().get(randomIndex);
-
-            // Realizar el casting a la clase adecuada
-            Objetos objetoAleatorio = (Objetos) objeto;
-
-            // Obtener la URL del objeto
-            String url = objetoAleatorio.getUrl();
-
-            // Crear el Icon a partir de la URL
-            Icon icono = new ImageIcon(url);
-
-            // Establecer el Icon en el objeto encontrado
-            objetoEncontrado.setIcon(icono);
-            }
-        }
-    
-    IconoEntrenador.setLocation(x, y);
+        IconoEntrenador.setLocation(x, y);
+        encuentraObjeto();
+        encuentraPokeñon();
     }
 
+    public void encuentraObjeto() {
+        // Detectar si el botón está cerca de una coordenada
+        double posicionObjetos = Math.sqrt(Math.pow(x - (int) (Math.random() * (1516)), 2) + Math.pow(y - (int) (Math.random() * (764)), 2));
+        if (posicionObjetos < 15) { // Si la distancia es menor que 100, mostrar el diálogo EncuentraObjeto
+            stopMoving();
+            EncuentraObjeto.setVisible(true);
+            Objetos objetoAleatorio = objetosRandom.get((int) (Math.random() * objetosRandom.size())); // Obtener el objeto correspondiente al índice aleatorio
+            personaje.getObjetos().add(objetoAleatorio);
+            ImageIcon icono = new ImageIcon(objetoAleatorio.getUrl()); // Crear el ImageIcon a partir de la URL
+            objetoEncontrado.setIcon(icono); // Establecer el ImageIcon en el objeto encontrado
+            timer();
+        }
+    }
+
+    public void encuentraPokeñon() {
+        // Detectar si el botón está cerca de una coordenada
+        double posicionPokeñon = Math.sqrt(Math.pow(x - (int) (Math.random() * (1516)), 2) + Math.pow(y - (int) (Math.random() * (764)), 2));
+        if (posicionPokeñon < 15) { // Si la distancia es menor que 100, mostrar el diálogo EncuentraObjeto
+            stopMoving();
+            contenedor.setSelectedIndex(5);
+            combate();
+        }
+    }
+
+    public void timer(){
+        int delay = 2000; // 4 segundos en milisegundos
+        Timer timer = new Timer(delay, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                EncuentraObjeto.dispose();
+                startMoving(0, 0); // Permitir que IconoEntrenador se mueva nuevamente desde la misma ubicación
+            }
+        });
+        timer.setRepeats(false); // No se repetirá
+        // Iniciar el temporizador
+        timer.start();
+    }
+    
+    public void timerCombate() {
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void combate(){
+        pokeñonAleatorioRival = pokeñonRandom.get((int) (Math.random() * pokeñonRandom.size()));
+        aliado = personaje.getPokeñons().get((int)Math.round(Math.random() * (personaje.getPokeñons().size()-1)));
+        ImageIcon iconoRival = new ImageIcon(pokeñonAleatorioRival.getUrl()); // Crear el ImageIcon a partir de la URL
+        ImageIcon iconoAliado = new ImageIcon(aliado.getUrlAliado());
+        rival.setIcon(iconoRival); // Establecer el ImageIcon en el objeto encontrado
+        miPokeñon.setIcon(iconoAliado);
+        miSalud.setText(" " + aliado.getSalud());
+        saludRival.setText(" " + pokeñonAleatorioRival.getSalud());
+    }
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -242,6 +264,18 @@ public class JFrame extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         soltarPokeñon = new javax.swing.JButton();
+        combate = new javax.swing.JPanel();
+        miPokeñon = new javax.swing.JLabel();
+        rival = new javax.swing.JLabel();
+        jLabel14 = new javax.swing.JLabel();
+        hidrobomba = new javax.swing.JButton();
+        latigocepa = new javax.swing.JButton();
+        impactrueno = new javax.swing.JButton();
+        placaje = new javax.swing.JButton();
+        lanzallamas = new javax.swing.JButton();
+        saludRival = new javax.swing.JLabel();
+        miSalud = new javax.swing.JLabel();
+        muestraAtaque = new javax.swing.JLabel();
 
         dialogGuardar.setModal(true);
         dialogGuardar.getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -308,6 +342,7 @@ public class JFrame extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Pokeñon");
+        setMinimumSize(new java.awt.Dimension(1080, 831));
 
         contenedor.setBackground(new java.awt.Color(255, 255, 255));
         contenedor.setAlignmentX(1.0F);
@@ -411,6 +446,7 @@ public class JFrame extends javax.swing.JFrame {
                 pSeleccionMouseEntered(evt);
             }
         });
+        pSeleccion.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         pikachu.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         pikachu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/pikachu.png"))); // NOI18N
@@ -428,6 +464,7 @@ public class JFrame extends javax.swing.JFrame {
                 pikachuActionPerformed(evt);
             }
         });
+        pSeleccion.add(pikachu, new org.netbeans.lib.awtextra.AbsoluteConstraints(334, 191, -1, -1));
 
         volverAlMenu3.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         volverAlMenu3.setText("VOLVER AL MENU");
@@ -437,6 +474,7 @@ public class JFrame extends javax.swing.JFrame {
                 volverAlMenu3ActionPerformed(evt);
             }
         });
+        pSeleccion.add(volverAlMenu3, new org.netbeans.lib.awtextra.AbsoluteConstraints(24, 646, 244, 66));
 
         bulbasaur.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/bulbasur.png"))); // NOI18N
         bulbasaur.setContentAreaFilled(false);
@@ -453,6 +491,7 @@ public class JFrame extends javax.swing.JFrame {
                 bulbasaurActionPerformed(evt);
             }
         });
+        pSeleccion.add(bulbasaur, new org.netbeans.lib.awtextra.AbsoluteConstraints(544, 191, 125, 131));
 
         charmander.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/charmander.png"))); // NOI18N
         charmander.setContentAreaFilled(false);
@@ -469,6 +508,7 @@ public class JFrame extends javax.swing.JFrame {
                 charmanderActionPerformed(evt);
             }
         });
+        pSeleccion.add(charmander, new org.netbeans.lib.awtextra.AbsoluteConstraints(774, 191, 125, 131));
 
         squirtle.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/squirtle.png"))); // NOI18N
         squirtle.setContentAreaFilled(false);
@@ -485,14 +525,17 @@ public class JFrame extends javax.swing.JFrame {
                 squirtleActionPerformed(evt);
             }
         });
+        pSeleccion.add(squirtle, new org.netbeans.lib.awtextra.AbsoluteConstraints(994, 191, 125, 131));
 
         nPikachu.setBackground(new java.awt.Color(255, 255, 255));
         nPikachu.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         nPikachu.setText("PIKACHU");
+        pSeleccion.add(nPikachu, new org.netbeans.lib.awtextra.AbsoluteConstraints(334, 349, -1, -1));
 
         nBulbasur.setBackground(new java.awt.Color(255, 255, 255));
         nBulbasur.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         nBulbasur.setText("BULBASAUR");
+        pSeleccion.add(nBulbasur, new org.netbeans.lib.awtextra.AbsoluteConstraints(543, 349, -1, -1));
 
         nSquirtle.setBackground(new java.awt.Color(255, 255, 255));
         nSquirtle.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
@@ -502,13 +545,16 @@ public class JFrame extends javax.swing.JFrame {
                 nSquirtleMouseClicked(evt);
             }
         });
+        pSeleccion.add(nSquirtle, new org.netbeans.lib.awtextra.AbsoluteConstraints(1016, 349, -1, -1));
 
         nCharmander.setBackground(new java.awt.Color(255, 255, 255));
         nCharmander.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         nCharmander.setText("CHARMANDER");
+        pSeleccion.add(nCharmander, new org.netbeans.lib.awtextra.AbsoluteConstraints(774, 349, -1, -1));
 
         jLabel12.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel12.setText("Elige un Pokeñon");
+        pSeleccion.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(633, 84, -1, 66));
 
         irJuego.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         irJuego.setText("CONTINUAR");
@@ -517,9 +563,11 @@ public class JFrame extends javax.swing.JFrame {
                 irJuegoActionPerformed(evt);
             }
         });
+        pSeleccion.add(irJuego, new org.netbeans.lib.awtextra.AbsoluteConstraints(1080, 640, 244, 66));
 
         jLabel11.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel11.setText("Nombre entrenador:");
+        pSeleccion.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(591, 404, -1, -1));
 
         insertarUsuario.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         insertarUsuario.addActionListener(new java.awt.event.ActionListener() {
@@ -532,109 +580,24 @@ public class JFrame extends javax.swing.JFrame {
                 insertarUsuarioKeyPressed(evt);
             }
         });
+        pSeleccion.add(insertarUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(591, 437, 295, 58));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 687, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 345, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
-        javax.swing.GroupLayout pSeleccionLayout = new javax.swing.GroupLayout(pSeleccion);
-        pSeleccion.setLayout(pSeleccionLayout);
-        pSeleccionLayout.setHorizontalGroup(
-            pSeleccionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pSeleccionLayout.createSequentialGroup()
-                .addGap(26, 26, 26)
-                .addComponent(volverAlMenu3, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(irJuego, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(793, 793, 793))
-            .addGroup(pSeleccionLayout.createSequentialGroup()
-                .addGap(334, 334, 334)
-                .addGroup(pSeleccionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pSeleccionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pSeleccionLayout.createSequentialGroup()
-                            .addGroup(pSeleccionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(nPikachu)
-                                .addComponent(pikachu))
-                            .addGroup(pSeleccionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(pSeleccionLayout.createSequentialGroup()
-                                    .addGap(85, 85, 85)
-                                    .addComponent(bulbasaur, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(105, 105, 105))
-                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pSeleccionLayout.createSequentialGroup()
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(nBulbasur)
-                                    .addGap(113, 113, 113)))
-                            .addGroup(pSeleccionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(pSeleccionLayout.createSequentialGroup()
-                                    .addComponent(charmander, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(95, 95, 95)
-                                    .addComponent(squirtle, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(pSeleccionLayout.createSequentialGroup()
-                                    .addComponent(nCharmander)
-                                    .addGap(106, 106, 106)
-                                    .addComponent(nSquirtle))))
-                        .addGroup(pSeleccionLayout.createSequentialGroup()
-                            .addGap(299, 299, 299)
-                            .addComponent(jLabel12)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 284, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(pSeleccionLayout.createSequentialGroup()
-                        .addGap(257, 257, 257)
-                        .addGroup(pSeleccionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel11)
-                            .addComponent(insertarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(387, 387, 387)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        pSeleccionLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {irJuego, volverAlMenu3});
-
-        pSeleccionLayout.setVerticalGroup(
-            pSeleccionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pSeleccionLayout.createSequentialGroup()
-                .addGroup(pSeleccionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pSeleccionLayout.createSequentialGroup()
-                        .addGap(39, 39, 39)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(pSeleccionLayout.createSequentialGroup()
-                        .addGap(84, 84, 84)
-                        .addGroup(pSeleccionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(pSeleccionLayout.createSequentialGroup()
-                                .addGap(107, 107, 107)
-                                .addGroup(pSeleccionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(pikachu)
-                                    .addComponent(bulbasaur, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(charmander, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(squirtle, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(27, 27, 27)
-                                .addGroup(pSeleccionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(nPikachu)
-                                    .addComponent(nBulbasur)
-                                    .addComponent(nCharmander)
-                                    .addComponent(nSquirtle))))
-                        .addGap(33, 33, 33)
-                        .addComponent(jLabel11)
-                        .addGap(8, 8, 8)
-                        .addComponent(insertarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 230, Short.MAX_VALUE)
-                .addGroup(pSeleccionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(volverAlMenu3, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(irJuego, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(69, 69, 69))
-        );
-
-        pSeleccionLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {irJuego, volverAlMenu3});
+        pSeleccion.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1506, 39, -1, -1));
 
         contenedor.addTab("Seleccionar", pSeleccion);
 
+        pJuego.setPreferredSize(new java.awt.Dimension(2199, 860));
         pJuego.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 pJuegoKeyPressed(evt);
@@ -670,7 +633,7 @@ public class JFrame extends javax.swing.JFrame {
         });
 
         mapa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/mapa.jpg"))); // NOI18N
-        mapa.setMaximumSize(new java.awt.Dimension(1000, 500));
+        mapa.setMaximumSize(new java.awt.Dimension(2147483647, 2147483647));
         mapa.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 mapaMouseClicked(evt);
@@ -859,6 +822,60 @@ public class JFrame extends javax.swing.JFrame {
         pInventario.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1490, 800));
 
         contenedor.addTab("Inventario", pInventario);
+
+        combate.setBackground(new java.awt.Color(255, 255, 255));
+        combate.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        combate.add(miPokeñon, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 610, 150, 90));
+        combate.add(rival, new org.netbeans.lib.awtextra.AbsoluteConstraints(1120, 110, 160, 133));
+
+        jLabel14.setFont(new java.awt.Font("Segoe UI", 1, 70)); // NOI18N
+        jLabel14.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel14.setText("VS");
+        combate.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 390, 190, 62));
+
+        hidrobomba.setBackground(new java.awt.Color(0, 204, 255));
+        hidrobomba.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        hidrobomba.setText("HIDROBOMBA");
+        combate.add(hidrobomba, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 680, -1, -1));
+
+        latigocepa.setBackground(new java.awt.Color(0, 204, 102));
+        latigocepa.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        latigocepa.setText("LATIGO CEPA");
+        combate.add(latigocepa, new org.netbeans.lib.awtextra.AbsoluteConstraints(1220, 680, -1, -1));
+
+        impactrueno.setBackground(new java.awt.Color(255, 255, 0));
+        impactrueno.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        impactrueno.setText("IMPACTRUENO");
+        combate.add(impactrueno, new org.netbeans.lib.awtextra.AbsoluteConstraints(1090, 680, -1, -1));
+
+        placaje.setBackground(new java.awt.Color(204, 204, 204));
+        placaje.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        placaje.setText("PLACAJE");
+        placaje.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                placajeActionPerformed(evt);
+            }
+        });
+        combate.add(placaje, new org.netbeans.lib.awtextra.AbsoluteConstraints(700, 680, 110, -1));
+
+        lanzallamas.setBackground(new java.awt.Color(255, 51, 51));
+        lanzallamas.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        lanzallamas.setText("LANZALLAMAS");
+        combate.add(lanzallamas, new org.netbeans.lib.awtextra.AbsoluteConstraints(950, 680, 122, -1));
+
+        saludRival.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        saludRival.setText("vida rival");
+        combate.add(saludRival, new org.netbeans.lib.awtextra.AbsoluteConstraints(800, 330, 105, 50));
+
+        miSalud.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        miSalud.setText("mi vida");
+        combate.add(miSalud, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 460, 105, 50));
+
+        muestraAtaque.setBackground(new java.awt.Color(255, 255, 255));
+        muestraAtaque.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        combate.add(muestraAtaque, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 100, 763, 37));
+
+        contenedor.addTab("Pelea", combate);
 
         getContentPane().add(contenedor, java.awt.BorderLayout.PAGE_START);
 
@@ -1233,6 +1250,31 @@ public class JFrame extends javax.swing.JFrame {
         listaPoke.setModel(listaP);
         soltarPokeñon.setEnabled(false);
     }//GEN-LAST:event_soltarPokeñonActionPerformed
+
+    private void placajeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_placajeActionPerformed
+        placaje.setEnabled(false);
+        hidrobomba.setEnabled(false);
+        impactrueno.setEnabled(false);
+        lanzallamas.setEnabled(false);
+        latigocepa.setEnabled(false);
+        Acciones.atacar(Ataques.GOLPE_NORMAL, pokeñonAleatorioRival, aliado);
+        saludRival.setText("" + pokeñonAleatorioRival.getSalud());
+        muestraAtaque.setText("Has usado Placaje");
+        List<Ataques> listaAtaque = new ArrayList();
+        for (Ataques value : Ataques.values()) {
+            listaAtaque.add(value);
+        }
+        timerCombate();
+        int numeroAleatorio = (int)Math.round(Math.random()*(listaAtaque.size()-1));
+        Acciones.atacar(listaAtaque.get(numeroAleatorio), pokeñonAleatorioRival, aliado);
+        miSalud.setText("" + aliado.getSalud());
+        muestraAtaque.setText(pokeñonAleatorioRival.getNombre() + " ha usado " + listaAtaque.get(numeroAleatorio));
+        placaje.setEnabled(true);
+        hidrobomba.setEnabled(true);
+        impactrueno.setEnabled(true);
+        lanzallamas.setEnabled(true);
+        latigocepa.setEnabled(true);
+    }//GEN-LAST:event_placajeActionPerformed
 //Clase interna de Action que contiene un metodo que aumenta el valor de la barra
 
     public class Action implements ActionListener {
@@ -1296,13 +1338,16 @@ public class JFrame extends javax.swing.JFrame {
     public javax.swing.JFileChooser cargarArchivo;
     public javax.swing.JButton cargarPartida;
     public javax.swing.JButton charmander;
+    public javax.swing.JPanel combate;
     public javax.swing.JTabbedPane contenedor;
     public javax.swing.JLayeredPane contenedorMapa;
     public javax.swing.JDialog dialogGuardar;
     public javax.swing.JDialog error;
     public javax.swing.JButton guardarPartida;
+    public javax.swing.JButton hidrobomba;
     public javax.swing.JLabel imagenMochila;
     public javax.swing.JLabel imagenPokeñon;
+    public javax.swing.JButton impactrueno;
     public javax.swing.JPanel inicio;
     public javax.swing.JTextField insertarUsuario;
     public javax.swing.JButton irInventario;
@@ -1313,6 +1358,7 @@ public class JFrame extends javax.swing.JFrame {
     public javax.swing.JLabel jLabel10;
     public javax.swing.JLabel jLabel11;
     public javax.swing.JLabel jLabel12;
+    public javax.swing.JLabel jLabel14;
     public javax.swing.JLabel jLabel2;
     public javax.swing.JLabel jLabel3;
     public javax.swing.JLabel jLabel4;
@@ -1326,10 +1372,15 @@ public class JFrame extends javax.swing.JFrame {
     public javax.swing.JScrollPane jScrollPane1;
     public javax.swing.JScrollPane jScrollPane4;
     public javax.swing.JSlider jSlider1;
+    public javax.swing.JButton lanzallamas;
+    public javax.swing.JButton latigocepa;
     public javax.swing.JList<String> listaMochila;
     public javax.swing.JList<String> listaPoke;
     public javax.swing.JLabel mapa;
     public javax.swing.JLabel mensajeError;
+    public javax.swing.JLabel miPokeñon;
+    public javax.swing.JLabel miSalud;
+    public javax.swing.JLabel muestraAtaque;
     public javax.swing.JLabel nBulbasur;
     public javax.swing.JLabel nCharmander;
     public javax.swing.JLabel nPikachu;
@@ -1341,7 +1392,10 @@ public class JFrame extends javax.swing.JFrame {
     public javax.swing.JPanel pMenu;
     public javax.swing.JPanel pSeleccion;
     public javax.swing.JButton pikachu;
+    public javax.swing.JButton placaje;
     public javax.swing.JLabel porcentajeBarra;
+    public javax.swing.JLabel rival;
+    public javax.swing.JLabel saludRival;
     public javax.swing.JButton save;
     public javax.swing.JButton soltarObjeto;
     public javax.swing.JButton soltarPokeñon;

@@ -4,6 +4,8 @@
  */
 package proyectopokeñon;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -14,6 +16,9 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.Timer;
 
 
 /**
@@ -23,8 +28,11 @@ import java.util.Random;
 public class Acciones extends JFrame {
     
     Pokeñon pokeñon;
+    Personaje personaje;
+    int x;
+    int y;
     
-    public void atacar(Ataques ataque, Pokeñon otroPokeñon) {
+    public static void atacar(Ataques ataque, Pokeñon otroPokeñon,Pokeñon miPokeñon) {
         double efectividad = 1.0;
         Tipo tipoAtaque = ataque.getTipo();
         Tipo tipoObjetivo = otroPokeñon.getTipo();
@@ -44,16 +52,16 @@ public class Acciones extends JFrame {
         } else {
             efectividad = 0.5;
         }
-        if (pokeñon.getTipo() == ataque.getTipo()){
+        if (miPokeñon.getTipo() == ataque.getTipo()){
             efectividad *= 2.0;
         }
-        if(pokeñon.getFuerza()>=otroPokeñon.getFuerza()){
+        if(miPokeñon.getFuerza()>=otroPokeñon.getFuerza()){
             efectividad = efectividad * 1.3;
         } else {
             efectividad = efectividad * 0.75;
         }
 
-        efectividad = (int) Math.round((efectividad * ataque.getFuerza() * pokeñon.getSalud() * 0.4) / 5.0);
+        efectividad = (int) Math.round((efectividad * ataque.getFuerza() * miPokeñon.getSalud() * 0.4) / 5.0);
         otroPokeñon.setSalud(otroPokeñon.getSalud() - efectividad);
     }
     
@@ -100,33 +108,4 @@ public class Acciones extends JFrame {
         in.close();
         return partida;
     }
-    
-    public static void posicionarObjetosRandom() {
-    int minX = 10;
-    int minY = 2;
-    int maxX = 1521;
-    int maxY = 764;
-    List<Objetos> oRandom = new ArrayList();
-    oRandom.add(Objetos.POCION);
-    oRandom.add(Objetos.MAXPOCION);
-    oRandom.add(Objetos.POKEBALL);
-    oRandom.add(Objetos.POTENCIADOR_ATQ);
-    oRandom.add(Objetos.SUPERBALL);
-    oRandom.add(Objetos.TICKET_ENFERMERIA);
-    oRandom.add(Objetos.ULTRABALL);
-    oRandom.add(Objetos.SUPERPOCION);
-
-    Random random = new Random();
-    for (Objetos objeto : oRandom) {
-        int x = random.nextInt(maxX - minX + 1) + minX;
-        int y = random.nextInt(maxY - minY + 1) + minY;
-
-        int index = random.nextInt(oRandom.size());
-        Objetos objetoRandom = oRandom.get(index);
-
-//        objeto.setCoordenadas(x, y);
-//        objeto.setNombre(objetoRandom.getNombre());
-        // Establecer cualquier otra propiedad aleatoria del objeto
-    }
-}
 }
