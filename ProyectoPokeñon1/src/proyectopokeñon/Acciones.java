@@ -53,7 +53,7 @@ public class Acciones extends JFrame {
             efectividad = 0.5;
         }
         if (miPokeñon.getTipo() == ataque.getTipo()){
-            efectividad *= 2.0;
+            efectividad *= 1.5;
         }
         if(miPokeñon.getFuerza()>=otroPokeñon.getFuerza()){
             efectividad = efectividad * 1.3;
@@ -61,7 +61,7 @@ public class Acciones extends JFrame {
             efectividad = efectividad * 0.75;
         }
 
-        efectividad = (int) Math.round((efectividad * ataque.getFuerza() * miPokeñon.getSalud() * 0.4) / 5.0);
+        efectividad = (int) Math.round(ataque.getFuerza()*efectividad);
         otroPokeñon.setSalud(otroPokeñon.getSalud() - efectividad);
     }
     

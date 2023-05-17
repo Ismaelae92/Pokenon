@@ -93,6 +93,9 @@ public class JFrame extends javax.swing.JFrame {
         error.setSize(400, 200);
         soltarPokeñon.setEnabled(false);
         soltarObjeto.setEnabled(false);
+        combateTerminado.setVisible(false);
+        combateTerminado.setLocationRelativeTo(this);
+        combateTerminado.setSize(600, 600);
     }
 
     public void setVisible(boolean b) {
@@ -166,12 +169,12 @@ public class JFrame extends javax.swing.JFrame {
     }
 
     public void timer(){
-        int delay = 2000; // 4 segundos en milisegundos
+        int delay = 2000; 
         Timer timer = new Timer(delay, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 EncuentraObjeto.dispose();
-                startMoving(0, 0); // Permitir que IconoEntrenador se mueva nuevamente desde la misma ubicación
+                startMoving(0, 0); 
             }
         });
         timer.setRepeats(false); // No se repetirá
@@ -181,7 +184,7 @@ public class JFrame extends javax.swing.JFrame {
     
     public void timerCombate() {
         try {
-            Thread.sleep(2000);
+            Thread.sleep(1000);
         } catch (InterruptedException ex) {
             ex.printStackTrace();
         }
@@ -190,9 +193,9 @@ public class JFrame extends javax.swing.JFrame {
     public void combate(){
         pokeñonAleatorioRival = pokeñonRandom.get((int) (Math.random() * pokeñonRandom.size()));
         aliado = personaje.getPokeñons().get((int)Math.round(Math.random() * (personaje.getPokeñons().size()-1)));
-        ImageIcon iconoRival = new ImageIcon(pokeñonAleatorioRival.getUrl()); // Crear el ImageIcon a partir de la URL
+        ImageIcon iconoRival = new ImageIcon(pokeñonAleatorioRival.getUrl()); 
         ImageIcon iconoAliado = new ImageIcon(aliado.getUrlAliado());
-        rival.setIcon(iconoRival); // Establecer el ImageIcon en el objeto encontrado
+        rival.setIcon(iconoRival); 
         miPokeñon.setIcon(iconoAliado);
         miSalud.setText(" " + aliado.getSalud());
         saludRival.setText(" " + pokeñonAleatorioRival.getSalud());
@@ -211,6 +214,8 @@ public class JFrame extends javax.swing.JFrame {
         mensajeError = new javax.swing.JLabel();
         EncuentraObjeto = new javax.swing.JDialog();
         objetoEncontrado = new javax.swing.JLabel();
+        combateTerminado = new javax.swing.JDialog();
+        mensajeCombate = new javax.swing.JLabel();
         contenedor = new javax.swing.JTabbedPane();
         inicio = new javax.swing.JPanel();
         barra = new javax.swing.JProgressBar();
@@ -275,6 +280,7 @@ public class JFrame extends javax.swing.JFrame {
         lanzallamas = new javax.swing.JButton();
         saludRival = new javax.swing.JLabel();
         miSalud = new javax.swing.JLabel();
+        muestraAtaqueAliado = new javax.swing.JLabel();
         muestraAtaque = new javax.swing.JLabel();
 
         dialogGuardar.setModal(true);
@@ -338,6 +344,28 @@ public class JFrame extends javax.swing.JFrame {
                 .addGap(123, 123, 123)
                 .addComponent(objetoEncontrado, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(167, Short.MAX_VALUE))
+        );
+
+        mensajeCombate.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        mensajeCombate.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        mensajeCombate.setText("Has perdido");
+        mensajeCombate.setToolTipText("");
+
+        javax.swing.GroupLayout combateTerminadoLayout = new javax.swing.GroupLayout(combateTerminado.getContentPane());
+        combateTerminado.getContentPane().setLayout(combateTerminadoLayout);
+        combateTerminadoLayout.setHorizontalGroup(
+            combateTerminadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(combateTerminadoLayout.createSequentialGroup()
+                .addGap(114, 114, 114)
+                .addComponent(mensajeCombate, javax.swing.GroupLayout.PREFERRED_SIZE, 397, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(157, Short.MAX_VALUE))
+        );
+        combateTerminadoLayout.setVerticalGroup(
+            combateTerminadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(combateTerminadoLayout.createSequentialGroup()
+                .addGap(95, 95, 95)
+                .addComponent(mensajeCombate, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(126, Short.MAX_VALUE))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -871,6 +899,10 @@ public class JFrame extends javax.swing.JFrame {
         miSalud.setText("mi vida");
         combate.add(miSalud, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 460, 105, 50));
 
+        muestraAtaqueAliado.setBackground(new java.awt.Color(255, 255, 255));
+        muestraAtaqueAliado.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        combate.add(muestraAtaqueAliado, new org.netbeans.lib.awtextra.AbsoluteConstraints(700, 580, 763, 37));
+
         muestraAtaque.setBackground(new java.awt.Color(255, 255, 255));
         muestraAtaque.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         combate.add(muestraAtaque, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 100, 763, 37));
@@ -1252,31 +1284,63 @@ public class JFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_soltarPokeñonActionPerformed
 
     private void placajeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_placajeActionPerformed
-        placaje.setEnabled(false);
-        hidrobomba.setEnabled(false);
-        impactrueno.setEnabled(false);
-        lanzallamas.setEnabled(false);
-        latigocepa.setEnabled(false);
+        muestraAtaque.setText("Has usado Placaje");
+        disableButton();
         Acciones.atacar(Ataques.GOLPE_NORMAL, pokeñonAleatorioRival, aliado);
         saludRival.setText("" + pokeñonAleatorioRival.getSalud());
-        muestraAtaque.setText("Has usado Placaje");
+        if(pokeñonAleatorioRival.getSalud()==0){
+            personaje.getPokeñons().add(pokeñonAleatorioRival);
+            saludIsZero();
+            pokeñonAleatorioRival.setSalud(70);
+            return;
+        }
         List<Ataques> listaAtaque = new ArrayList();
         for (Ataques value : Ataques.values()) {
             listaAtaque.add(value);
         }
         timerCombate();
         int numeroAleatorio = (int)Math.round(Math.random()*(listaAtaque.size()-1));
-        Acciones.atacar(listaAtaque.get(numeroAleatorio), pokeñonAleatorioRival, aliado);
+        Acciones.atacar(listaAtaque.get(numeroAleatorio), aliado, pokeñonAleatorioRival);
         miSalud.setText("" + aliado.getSalud());
+        if(aliado.getSalud()==0){
+            saludIsZero();
+            return;
+        }
         muestraAtaque.setText(pokeñonAleatorioRival.getNombre() + " ha usado " + listaAtaque.get(numeroAleatorio));
+        enableButton();
+    }//GEN-LAST:event_placajeActionPerformed
+
+    public void enableButton() {
         placaje.setEnabled(true);
         hidrobomba.setEnabled(true);
         impactrueno.setEnabled(true);
         lanzallamas.setEnabled(true);
         latigocepa.setEnabled(true);
-    }//GEN-LAST:event_placajeActionPerformed
-//Clase interna de Action que contiene un metodo que aumenta el valor de la barra
+    }
 
+    private void disableButton() {
+        placaje.setEnabled(false);
+        hidrobomba.setEnabled(false);
+        impactrueno.setEnabled(false);
+        lanzallamas.setEnabled(false);
+        latigocepa.setEnabled(false);
+    }
+
+    private void saludIsZero() {
+        if (aliado.getSalud()==0) {
+            combateTerminado.setVisible(true);
+            mensajeCombate.setText(pokeñonAleatorioRival.getNombre() + " te ha vencido");
+        } else {
+            combateTerminado.setVisible(true);
+            mensajeCombate.setText("Has vencido");
+        }
+        contenedor.setSelectedIndex(3);
+        muestraAtaque.setText("");
+        enableButton();
+        aliado.setSalud(70);
+        
+    }
+    
     public class Action implements ActionListener {
 
         int i = 0;
@@ -1339,6 +1403,7 @@ public class JFrame extends javax.swing.JFrame {
     public javax.swing.JButton cargarPartida;
     public javax.swing.JButton charmander;
     public javax.swing.JPanel combate;
+    public javax.swing.JDialog combateTerminado;
     public javax.swing.JTabbedPane contenedor;
     public javax.swing.JLayeredPane contenedorMapa;
     public javax.swing.JDialog dialogGuardar;
@@ -1377,10 +1442,12 @@ public class JFrame extends javax.swing.JFrame {
     public javax.swing.JList<String> listaMochila;
     public javax.swing.JList<String> listaPoke;
     public javax.swing.JLabel mapa;
+    public javax.swing.JLabel mensajeCombate;
     public javax.swing.JLabel mensajeError;
     public javax.swing.JLabel miPokeñon;
     public javax.swing.JLabel miSalud;
     public javax.swing.JLabel muestraAtaque;
+    public javax.swing.JLabel muestraAtaqueAliado;
     public javax.swing.JLabel nBulbasur;
     public javax.swing.JLabel nCharmander;
     public javax.swing.JLabel nPikachu;

@@ -9,11 +9,11 @@ package proyectopokeñon;
  * @author Ismael
  */
 public enum Ataques {
-    LANZALLAMAS("Lanzallamas", 90, Tipo.FUEGO),
-    HIDROBOMBA("Hidrobomba", 95, Tipo.AGUA),
-    LATIGO_CEPA("Látigo Cepa", 80, Tipo.PLANTA),
-    IMPACTRUENO("Impactrueno", 100, Tipo.ELECTRICO),
-    GOLPE_NORMAL("Golpe Normal", 70, Tipo.NORMAL);
+    LANZALLAMAS("Lanzallamas", 45, Tipo.FUEGO),
+    HIDROBOMBA("Hidrobomba", 55, Tipo.AGUA),
+    LATIGO_CEPA("Látigo Cepa", 60, Tipo.PLANTA),
+    IMPACTRUENO("Impactrueno", 70, Tipo.ELECTRICO),
+    GOLPE_NORMAL("Golpe Normal", 30, Tipo.NORMAL);
 
     private String nombre;
     private int fuerza;
