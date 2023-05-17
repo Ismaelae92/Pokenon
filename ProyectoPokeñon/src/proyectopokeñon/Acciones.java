@@ -11,6 +11,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 
 /**
@@ -89,4 +92,41 @@ public class Acciones extends JFrame {
     public static void SoltarObjetos(Personaje personaje, int indice){
         personaje.getObjetos().remove(indice);
     }
+    
+    public static Personaje cargar(String archivo) throws FileNotFoundException, IOException, ClassNotFoundException {
+        Personaje partida = null;
+        ObjectInputStream in = new ObjectInputStream(new FileInputStream(archivo));
+        partida = (Personaje) in.readObject();
+        in.close();
+        return partida;
+    }
+    
+    public static void posicionarObjetosRandom() {
+    int minX = 10;
+    int minY = 2;
+    int maxX = 1521;
+    int maxY = 764;
+    List<Objetos> oRandom = new ArrayList();
+    oRandom.add(Objetos.POCION);
+    oRandom.add(Objetos.MAXPOCION);
+    oRandom.add(Objetos.POKEBALL);
+    oRandom.add(Objetos.POTENCIADOR_ATQ);
+    oRandom.add(Objetos.SUPERBALL);
+    oRandom.add(Objetos.TICKET_ENFERMERIA);
+    oRandom.add(Objetos.ULTRABALL);
+    oRandom.add(Objetos.SUPERPOCION);
+
+    Random random = new Random();
+    for (Objetos objeto : oRandom) {
+        int x = random.nextInt(maxX - minX + 1) + minX;
+        int y = random.nextInt(maxY - minY + 1) + minY;
+
+        int index = random.nextInt(oRandom.size());
+        Objetos objetoRandom = oRandom.get(index);
+
+        objeto.setCoordenadas(x, y);
+        objeto.setNombre(objetoRandom.getNombre());
+        // Establecer cualquier otra propiedad aleatoria del objeto
+    }
+}
 }

@@ -51,7 +51,7 @@ public enum Pokeñon {
         this.nombre = nombre;
         this.tipo = tipo;
         this.fuerza = fuerza;
-        this.salud = 100;
+        this.salud = salud;
         this.url = url;
     }
 

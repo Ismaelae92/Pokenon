@@ -84,7 +84,6 @@ public class JFrame extends javax.swing.JFrame {
         cargarArchivo.setVisible(false);
         personaje = new Personaje();
         personaje.getObjetos().add(Objetos.MAXPOCION);
-        personaje.getObjetos().add(Objetos.POTECIADOR_DEF);
         personaje.getObjetos().add(Objetos.POTENCIADOR_ATQ);
         personaje.getObjetos().add(Objetos.POCION);
         personaje.getObjetos().add(Objetos.POKEBALL);
@@ -145,10 +144,10 @@ public class JFrame extends javax.swing.JFrame {
             y = limiteY;
         }
         // Detecta si el boton esta cerca de una coordenada
-        double distancia = Math.sqrt(Math.pow(x - 430, 2) + Math.pow(y - 700, 2));
+        double posicionObjetos = Math.sqrt(Math.pow(x - 430, 2) + Math.pow(y - 700, 2));
 
         // Si la distancia es menor que 50, mostrar el JTabbedPane
-        if (distancia < 100) {
+        if (posicionObjetos < 100) {
 
         }
         IconoEntrenador.setLocation(x, y);
@@ -726,6 +725,7 @@ public class JFrame extends javax.swing.JFrame {
         jPanel2.add(imagenPokeñon, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 300, 150, 140));
 
         imagenMochila.setBackground(new java.awt.Color(255, 255, 255));
+        imagenMochila.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/charmander.png"))); // NOI18N
         jPanel2.add(imagenMochila, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 300, 140, 140));
 
         listaMochila.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
@@ -837,6 +837,7 @@ public class JFrame extends javax.swing.JFrame {
             mensajeError.setText(e.getMessage());
             e.printStackTrace();
         }
+        dialogGuardar.setVisible(false);
     }//GEN-LAST:event_saveActionPerformed
 
     private void pJuegoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_pJuegoKeyPressed
@@ -960,6 +961,9 @@ public class JFrame extends javax.swing.JFrame {
             personaje = Acciones.cargar(cargarArchivo.getSelectedFile());
             cargarArchivo.setVisible(false);
             contenedor.setSelectedIndex(3);
+            for (Pokeñon pokeñon1 : personaje.getPokeñons()) {
+                System.out.println(pokeñon1);
+            }
         } catch (IOException e) {
             error.setVisible(true);
             mensajeError.setText(e.getMessage());
@@ -1075,10 +1079,12 @@ public class JFrame extends javax.swing.JFrame {
     private void usarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_usarActionPerformed
         if(listaMochila.getSelectedIndex()!=-1){
             Objetos o = personaje.getObjetos().get(listaMochila.getSelectedIndex());
+            soltarObjetoActionPerformed(null);
             if (o.getNombre() == "Poción") {
                 if (listaPoke.getSelectedIndex() != -1) {
                     personaje.getPokeñons().get(listaPoke.getSelectedIndex())
                             .setSalud((personaje.getPokeñons().get(listaPoke.getSelectedIndex()).getSalud() + 20));
+                    soltarObjetoActionPerformed(null);
                 } else {
                     System.out.println("Introducir una ventana para mostrara error");
                 }
@@ -1086,6 +1092,7 @@ public class JFrame extends javax.swing.JFrame {
                 if (listaPoke.getSelectedIndex() != -1) {
                     personaje.getPokeñons().get(listaPoke.getSelectedIndex())
                             .setSalud((personaje.getPokeñons().get(listaPoke.getSelectedIndex()).getSalud() + 50));
+                    soltarObjetoActionPerformed(null);
                 } else {
                     System.out.println("Introducir una ventana para mostrara error");
                 }
@@ -1093,26 +1100,27 @@ public class JFrame extends javax.swing.JFrame {
                 if (listaPoke.getSelectedIndex() != -1) {
                     personaje.getPokeñons().get(listaPoke.getSelectedIndex())
                             .setSalud(200);
+                    soltarObjetoActionPerformed(null);
                 } else {
                     System.out.println("Introducir una ventana para mostrara error");
                 }
             } else if (o.getNombre() == "Potenciador de ataque") {
-
-            } else if (o.getNombre() == "Potenciador de defensa") {
                 if (listaPoke.getSelectedIndex() != -1) {
                     personaje.getPokeñons().get(listaPoke.getSelectedIndex())
                             .setFuerza((personaje.getPokeñons().get(listaPoke.getSelectedIndex()).getFuerza() * 1.5));
+                    soltarObjetoActionPerformed(null);
                 } else {
                     System.out.println("Introducir una ventana para mostrara error");
                 }
             } else if (o.getNombre() == "Ticket de enfermería") {
                 System.out.println("Va a la enfermería");
+                soltarObjetoActionPerformed(null);
             }
         }
+        
         DefaultListModel modelPoke = new DefaultListModel();
         modelPoke.addAll(personaje.getPokeñons());
         listaPoke.repaint();
-        soltarObjetoActionPerformed(null);
     }//GEN-LAST:event_usarActionPerformed
 
     private void listaMochilaFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_listaMochilaFocusGained
@@ -1122,7 +1130,7 @@ public class JFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_listaMochilaFocusGained
 
     private void listaMochilaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_listaMochilaFocusLost
-
+        imagenMochila.setIcon(null);
     }//GEN-LAST:event_listaMochilaFocusLost
 
     private void FiltroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FiltroActionPerformed
@@ -1171,7 +1179,7 @@ public class JFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_listaPokeFocusGained
 
     private void listaPokeFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_listaPokeFocusLost
-
+        imagenPokeñon.setIcon(null);
     }//GEN-LAST:event_listaPokeFocusLost
 
     private void soltarPokeñonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_soltarPokeñonActionPerformed
