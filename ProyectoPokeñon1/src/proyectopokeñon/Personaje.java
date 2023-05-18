@@ -5,13 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Personaje implements Serializable {
-    private List<Objetos> objetos;
+    private List<Objeto> objetos;
     private List<Pokeñon> pokeñon;
     private String nombreUsuario;
     
 
-    public Personaje(List<Objetos> objetos, List<Pokeñon> pokeñons,String nombre) {
-        this.objetos = new ArrayList<Objetos>();
+    public Personaje(List<Objeto> objetos, List<Pokeñon> pokeñons,String nombre) {
+        this.objetos = new ArrayList<Objeto>();
         this.pokeñon = new ArrayList<Pokeñon>();
         this.nombreUsuario = nombreUsuario;
     }
@@ -25,11 +25,11 @@ public class Personaje implements Serializable {
     }
     
     public Personaje() {
-        objetos = new ArrayList<Objetos>();
+        objetos = new ArrayList<Objeto>();
         pokeñon = new ArrayList<Pokeñon>();
     }
 
-    public List<Objetos> getObjetos() {
+    public List<Objeto> getObjetos() {
         return objetos;
     }
 

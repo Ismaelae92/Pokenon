@@ -45,13 +45,13 @@ public class JFrame extends javax.swing.JFrame {
     int limiteY;
     private static Personaje personaje;
     private Pokeñon pokeñon;
-    public List<Objetos> objetosRandom;
+    public List<Objeto> objetosRandom;
     public List<Pokeñon> pokeñonRandom;
     private Pokeñon aliado;
     private Pokeñon pokeñonAleatorioRival;
     ImageIcon der = new ImageIcon("src\\imagenes\\der.png");
     ImageIcon izq = new ImageIcon("src\\imagenes\\izq.png");
-    ImageIcon arr = new ImageIcon("src\\imagenes\\adelante.png");
+    ImageIcon arr = new ImageIcon("src\\imagenes\\arriba.png");
     ImageIcon abj = new ImageIcon("src\\imagenes\\atras.png");
 
     public JFrame() {
@@ -68,7 +68,7 @@ public class JFrame extends javax.swing.JFrame {
         setSize(screenSize);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setLocationRelativeTo(null);
-        
+
         //Inicia accion de temporizador e indica que cambie de pantalla cuando termine el progreso
         if (inicio.isEnabled()) {
             accion = new Action();
@@ -83,24 +83,26 @@ public class JFrame extends javax.swing.JFrame {
         objetosRandom = new ArrayList();
         pokeñonRandom = new ArrayList();
         //Rellena listas random iniciales
-        for (Objetos objeto : Objetos.values()) {
+        for (Objeto objeto : Objeto.values()) {
             objetosRandom.add(objeto);
         }
-        
+
         for (Pokeñon objeto : Pokeñon.values()) {
             pokeñonRandom.add(objeto);
         }
-        
+
         dialogGuardar.setSize(800, 400);
         dialogGuardar.setLocationRelativeTo(this);
         error.setLocationRelativeTo(this);
         error.setSize(400, 200);
         soltarPokeñon.setEnabled(false);
         soltarObjeto.setEnabled(false);
-        combateTerminado.setVisible(false);
-        combateTerminado.setLocationRelativeTo(this);
-        combateTerminado.setSize(600, 600);
-        personaje.getObjetos().add(Objetos.MAXPOCION);
+        personaje.getObjetos().add(Objeto.MAXPOCION);
+        bPokeball.setVisible(false);
+        bSuperball.setVisible(false);
+        bUltraball.setVisible(false);
+        EncuentraObjeto.setLocationRelativeTo(null);
+        EncuentraObjeto.setSize(438, 330);
     }
 
     private void introducirAudio() {
@@ -126,7 +128,7 @@ public class JFrame extends javax.swing.JFrame {
             System.out.println("err");
         }
     }
-    
+
     public void setVisible(boolean b) {
         super.setVisible(b);
         if (b) {
@@ -179,10 +181,11 @@ public class JFrame extends javax.swing.JFrame {
         if (posicionObjetos < 30) { // Si la distancia es menor que 100, mostrar el diálogo EncuentraObjeto
             stopMoving();
             EncuentraObjeto.setVisible(true);
-            Objetos objetoAleatorio = objetosRandom.get((int) (Math.random() * objetosRandom.size())); // Obtener el objeto correspondiente al índice aleatorio
+            Objeto objetoAleatorio = objetosRandom.get((int) (Math.random() * objetosRandom.size())); // Obtener el objeto correspondiente al índice aleatorio
             personaje.getObjetos().add(objetoAleatorio);
             ImageIcon icono = new ImageIcon(objetoAleatorio.getUrl()); // Crear el ImageIcon a partir de la URL
             objetoEncontrado.setIcon(icono); // Establecer el ImageIcon en el objeto encontrado
+            encontradoTexto.setText("Has encontrado " + objetoAleatorio);
             timer();
         }
     }
@@ -190,27 +193,27 @@ public class JFrame extends javax.swing.JFrame {
     public void encuentraPokeñon() {
         // Detectar si el botón está cerca de una coordenada
         double posicionPokeñon = Math.sqrt(Math.pow(x - (int) (Math.random() * (1516)), 2) + Math.pow(y - (int) (Math.random() * (764)), 2));
-        if (posicionPokeñon < 30) { // Si la distancia es menor que 100, mostrar el diálogo EncuentraObjeto
+        if (posicionPokeñon < 20) { // Si la distancia es menor que 100, mostrar el diálogo EncuentraObjeto
             stopMoving();
             contenedor.setSelectedIndex(5);
             combate();
         }
     }
 
-    public void timer(){
-        int delay = 2000; 
+    public void timer() {
+        int delay = 1000;
         Timer timer = new Timer(delay, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 EncuentraObjeto.dispose();
-                startMoving(0, 0); 
+                startMoving(0, 0);
             }
         });
         timer.setRepeats(false); // No se repetirá
         // Iniciar el temporizador
         timer.start();
     }
-    
+
     public void timerCombate() {
         try {
             Thread.sleep(2000);
@@ -219,17 +222,17 @@ public class JFrame extends javax.swing.JFrame {
         }
     }
 
-    public void combate(){
+    public void combate() {
         pokeñonAleatorioRival = pokeñonRandom.get((int) (Math.random() * pokeñonRandom.size()));
-        aliado = personaje.getPokeñons().get((int)Math.round(Math.random() * (personaje.getPokeñons().size()-1)));
-        ImageIcon iconoRival = new ImageIcon(pokeñonAleatorioRival.getUrl()); 
+        aliado = personaje.getPokeñons().get((int) Math.round(Math.random() * (personaje.getPokeñons().size() - 1)));
+        ImageIcon iconoRival = new ImageIcon(pokeñonAleatorioRival.getUrl());
         ImageIcon iconoAliado = new ImageIcon(aliado.getUrlAliado());
-        rival.setIcon(iconoRival); 
+        rival.setIcon(iconoRival);
         miPokeñon.setIcon(iconoAliado);
         miSalud.setText(" " + aliado.getSalud());
         saludRival.setText(" " + pokeñonAleatorioRival.getSalud());
     }
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -243,8 +246,7 @@ public class JFrame extends javax.swing.JFrame {
         mensajeError = new javax.swing.JLabel();
         EncuentraObjeto = new javax.swing.JDialog();
         objetoEncontrado = new javax.swing.JLabel();
-        combateTerminado = new javax.swing.JDialog();
-        mensajeCombate = new javax.swing.JLabel();
+        encontradoTexto = new javax.swing.JLabel();
         contenedor = new javax.swing.JTabbedPane();
         inicio = new javax.swing.JPanel();
         barra = new javax.swing.JProgressBar();
@@ -314,6 +316,7 @@ public class JFrame extends javax.swing.JFrame {
         bPokeball = new javax.swing.JButton();
         bSuperball = new javax.swing.JButton();
         bUltraball = new javax.swing.JButton();
+        combateVolver = new javax.swing.JButton();
 
         dialogGuardar.setModal(true);
         dialogGuardar.getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -361,43 +364,37 @@ public class JFrame extends javax.swing.JFrame {
                 .addContainerGap(168, Short.MAX_VALUE))
         );
 
+        EncuentraObjeto.setMinimumSize(new java.awt.Dimension(300, 400));
+        EncuentraObjeto.setPreferredSize(new java.awt.Dimension(500, 430));
+        EncuentraObjeto.setResizable(false);
+
+        objetoEncontrado.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+        encontradoTexto.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        encontradoTexto.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
         javax.swing.GroupLayout EncuentraObjetoLayout = new javax.swing.GroupLayout(EncuentraObjeto.getContentPane());
         EncuentraObjeto.getContentPane().setLayout(EncuentraObjetoLayout);
         EncuentraObjetoLayout.setHorizontalGroup(
             EncuentraObjetoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(EncuentraObjetoLayout.createSequentialGroup()
-                .addGap(344, 344, 344)
-                .addComponent(objetoEncontrado, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(368, Short.MAX_VALUE))
+                .addGroup(EncuentraObjetoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(EncuentraObjetoLayout.createSequentialGroup()
+                        .addGap(31, 31, 31)
+                        .addComponent(encontradoTexto, javax.swing.GroupLayout.PREFERRED_SIZE, 327, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(EncuentraObjetoLayout.createSequentialGroup()
+                        .addGap(71, 71, 71)
+                        .addComponent(objetoEncontrado, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(80, Short.MAX_VALUE))
         );
         EncuentraObjetoLayout.setVerticalGroup(
             EncuentraObjetoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(EncuentraObjetoLayout.createSequentialGroup()
-                .addGap(123, 123, 123)
+                .addGap(61, 61, 61)
                 .addComponent(objetoEncontrado, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(167, Short.MAX_VALUE))
-        );
-
-        mensajeCombate.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        mensajeCombate.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        mensajeCombate.setText("Has perdido");
-        mensajeCombate.setToolTipText("");
-
-        javax.swing.GroupLayout combateTerminadoLayout = new javax.swing.GroupLayout(combateTerminado.getContentPane());
-        combateTerminado.getContentPane().setLayout(combateTerminadoLayout);
-        combateTerminadoLayout.setHorizontalGroup(
-            combateTerminadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(combateTerminadoLayout.createSequentialGroup()
-                .addGap(114, 114, 114)
-                .addComponent(mensajeCombate, javax.swing.GroupLayout.PREFERRED_SIZE, 397, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(157, Short.MAX_VALUE))
-        );
-        combateTerminadoLayout.setVerticalGroup(
-            combateTerminadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(combateTerminadoLayout.createSequentialGroup()
-                .addGap(95, 95, 95)
-                .addComponent(mensajeCombate, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(126, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(encontradoTexto, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(43, Short.MAX_VALUE))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -665,7 +662,7 @@ public class JFrame extends javax.swing.JFrame {
         });
         pJuego.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        IconoEntrenador.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/pikachu.png"))); // NOI18N
+        IconoEntrenador.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/arriba.png"))); // NOI18N
         IconoEntrenador.setContentAreaFilled(false);
         IconoEntrenador.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -711,12 +708,12 @@ public class JFrame extends javax.swing.JFrame {
             .addGroup(contenedorMapaLayout.createSequentialGroup()
                 .addGroup(contenedorMapaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(contenedorMapaLayout.createSequentialGroup()
-                        .addGap(490, 490, 490)
-                        .addComponent(IconoEntrenador))
-                    .addGroup(contenedorMapaLayout.createSequentialGroup()
                         .addGap(25, 25, 25)
-                        .addComponent(irInventario, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(1114, Short.MAX_VALUE))
+                        .addComponent(irInventario, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(contenedorMapaLayout.createSequentialGroup()
+                        .addGap(501, 501, 501)
+                        .addComponent(IconoEntrenador)))
+                .addContainerGap(1179, Short.MAX_VALUE))
             .addGroup(contenedorMapaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(contenedorMapaLayout.createSequentialGroup()
                     .addGap(0, 0, Short.MAX_VALUE)
@@ -728,9 +725,9 @@ public class JFrame extends javax.swing.JFrame {
             .addGroup(contenedorMapaLayout.createSequentialGroup()
                 .addGap(17, 17, 17)
                 .addComponent(irInventario, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(29, 29, 29)
+                .addGap(119, 119, 119)
                 .addComponent(IconoEntrenador)
-                .addContainerGap(581, Short.MAX_VALUE))
+                .addContainerGap(562, Short.MAX_VALUE))
             .addGroup(contenedorMapaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(contenedorMapaLayout.createSequentialGroup()
                     .addGap(0, 0, Short.MAX_VALUE)
@@ -953,11 +950,13 @@ public class JFrame extends javax.swing.JFrame {
 
         muestraAtaqueAliado.setBackground(new java.awt.Color(255, 255, 255));
         muestraAtaqueAliado.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        combate.add(muestraAtaqueAliado, new org.netbeans.lib.awtextra.AbsoluteConstraints(700, 580, 763, 37));
+        muestraAtaqueAliado.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        combate.add(muestraAtaqueAliado, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 590, 763, 37));
 
         muestraAtaque.setBackground(new java.awt.Color(255, 255, 255));
         muestraAtaque.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        combate.add(muestraAtaque, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 120, 763, 37));
+        muestraAtaque.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        combate.add(muestraAtaque, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 100, 763, 37));
 
         bPokeball.setText("Pokeball");
         bPokeball.addActionListener(new java.awt.event.ActionListener() {
@@ -968,10 +967,29 @@ public class JFrame extends javax.swing.JFrame {
         combate.add(bPokeball, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 230, -1, -1));
 
         bSuperball.setText("Superball");
+        bSuperball.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bSuperballActionPerformed(evt);
+            }
+        });
         combate.add(bSuperball, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 230, -1, -1));
 
         bUltraball.setText("Ultraball");
+        bUltraball.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bUltraballActionPerformed(evt);
+            }
+        });
         combate.add(bUltraball, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 230, -1, -1));
+
+        combateVolver.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        combateVolver.setText("Volver al juego");
+        combateVolver.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                combateVolverActionPerformed(evt);
+            }
+        });
+        combate.add(combateVolver, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 430, -1, -1));
 
         contenedor.addTab("Pelea", combate);
 
@@ -1011,7 +1029,7 @@ public class JFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_IconoEntrenadorKeyReleased
 
     private void IconoEntrenadorKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_IconoEntrenadorKeyPressed
-        
+
         switch (evt.getKeyCode()) {
             case KeyEvent.VK_UP:
                 startMoving(0, -1);
@@ -1096,6 +1114,10 @@ public class JFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_bulbasaurMouseEntered
 
     private void volverAlMenu3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_volverAlMenu3ActionPerformed
+        bulbasaur.setEnabled(true);
+        squirtle.setEnabled(true);
+        charmander.setEnabled(true);
+        pikachu.setEnabled(true);
         contenedor.setSelectedIndex(1);
     }//GEN-LAST:event_volverAlMenu3ActionPerformed
 
@@ -1219,8 +1241,8 @@ public class JFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_soltarObjetoActionPerformed
 
     private void usarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_usarActionPerformed
-        if(listaMochila.getSelectedIndex()!=-1){
-            Objetos o = personaje.getObjetos().get(listaMochila.getSelectedIndex());
+        if (listaMochila.getSelectedIndex() != -1) {
+            Objeto o = personaje.getObjetos().get(listaMochila.getSelectedIndex());
             soltarObjetoActionPerformed(null);
             if (o.getNombre() == "Poción") {
                 if (listaPoke.getSelectedIndex() != -1) {
@@ -1259,7 +1281,7 @@ public class JFrame extends javax.swing.JFrame {
                 soltarObjetoActionPerformed(null);
             }
         }
-        
+
         DefaultListModel modelPoke = new DefaultListModel();
         modelPoke.addAll(personaje.getPokeñons());
         listaPoke.repaint();
@@ -1296,13 +1318,13 @@ public class JFrame extends javax.swing.JFrame {
 
     private void AscDescActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AscDescActionPerformed
         if (AscDesc.getText() == "Ascendente") {
-            Collections.sort(personaje.getObjetos(), Comparator.comparing(Objetos::getNombre));
+            Collections.sort(personaje.getObjetos(), Comparator.comparing(Objeto::getNombre));
             AscDesc.setText("Descendente");
             DefaultListModel modelMochila = new DefaultListModel();
             modelMochila.addAll(personaje.getObjetos());
             listaMochila.setModel(modelMochila);
         } else {
-            Collections.sort(personaje.getObjetos(), Comparator.comparing(Objetos::getNombre, Collections.reverseOrder()));
+            Collections.sort(personaje.getObjetos(), Comparator.comparing(Objeto::getNombre, Collections.reverseOrder()));
             AscDesc.setText("Ascendente");
             DefaultListModel modelMochila = new DefaultListModel();
             modelMochila.addAll(personaje.getObjetos());
@@ -1335,62 +1357,127 @@ public class JFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_soltarPokeñonActionPerformed
 
     private void placajeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_placajeActionPerformed
-        if(ataqueAliado(Ataques.GOLPE_NORMAL))return; 
+        if (ataqueAliado(Ataque.GOLPE_NORMAL)) {
+            return;
+        }
         ataqueRival();
     }//GEN-LAST:event_placajeActionPerformed
 
     private void hidrobombaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hidrobombaActionPerformed
-        if(ataqueAliado(Ataques.HIDROBOMBA))return; 
+        if (ataqueAliado(Ataque.HIDROBOMBA)) {
+            return;
+        }
         ataqueRival();
     }//GEN-LAST:event_hidrobombaActionPerformed
 
     private void lanzallamasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lanzallamasActionPerformed
-        if(ataqueAliado(Ataques.LANZALLAMAS))return; 
+        if (ataqueAliado(Ataque.LANZALLAMAS)) {
+            return;
+        }
         ataqueRival();
     }//GEN-LAST:event_lanzallamasActionPerformed
 
     private void impactruenoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_impactruenoActionPerformed
-        if(ataqueAliado(Ataques.IMPACTRUENO))return; 
+        if (ataqueAliado(Ataque.IMPACTRUENO)) {
+            return;
+        }
         ataqueRival();
     }//GEN-LAST:event_impactruenoActionPerformed
 
     private void latigocepaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_latigocepaActionPerformed
-        if(ataqueAliado(Ataques.LATIGO_CEPA))return; 
+        if (ataqueAliado(Ataque.LATIGO_CEPA)) {
+            return;
+        }
         ataqueRival();
     }//GEN-LAST:event_latigocepaActionPerformed
 
     private void bPokeballActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bPokeballActionPerformed
-        // TODO add your handling code here:
+        for (Objeto objeto : personaje.getObjetos()) {
+            if(objeto==Objeto.POKEBALL){
+                if (50 > ((int) Math.round((Math.random() + 1) * 50))) {
+                    personaje.getPokeñons().add(pokeñonAleatorioRival);
+                }
+                bPokeball.setVisible(false);
+                bSuperball.setVisible(false);
+                bSuperball.setVisible(false);
+                contenedor.setSelectedIndex(3);
+            } else {
+                muestraAtaque.setText("No tienes pokeballs");
+            }
+        }
+        
     }//GEN-LAST:event_bPokeballActionPerformed
 
-    private boolean ataqueAliado(Ataques ataque) {
-        muestraAtaqueAliado.setText("Has usado "+ ataque);
+    private void bSuperballActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bSuperballActionPerformed
+        for (Objeto objeto : personaje.getObjetos()) {
+            if(objeto==Objeto.SUPERBALL){
+                if (75 > ((int) Math.round((Math.random() + 1) * 50))) {
+                    personaje.getPokeñons().add(pokeñonAleatorioRival);
+                }
+                bPokeball.setVisible(false);
+                bSuperball.setVisible(false);
+                bSuperball.setVisible(false);
+                contenedor.setSelectedIndex(3);
+            } else {
+                muestraAtaque.setText("No tienes superballs");
+            }
+        }
+    }//GEN-LAST:event_bSuperballActionPerformed
+
+    private void bUltraballActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bUltraballActionPerformed
+        for (Objeto objeto : personaje.getObjetos()) {
+            if(objeto==Objeto.SUPERBALL){
+                if (95 > ((int) Math.round((Math.random() + 1) * 50))) {
+                    personaje.getPokeñons().add(pokeñonAleatorioRival);
+                }
+                bPokeball.setVisible(false);
+                bSuperball.setVisible(false);
+                bSuperball.setVisible(false);
+                contenedor.setSelectedIndex(3);
+            } else {
+                muestraAtaque.setText("No tienes ultraballs");
+            }
+        }
+    }//GEN-LAST:event_bUltraballActionPerformed
+
+    private void combateVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_combateVolverActionPerformed
+        bPokeball.setVisible(false);
+        bSuperball.setVisible(false);
+        bSuperball.setVisible(false);
+        muestraAtaque.setText("");
+        muestraAtaqueAliado.setText("");
+        contenedor.setSelectedIndex(3);
+    }//GEN-LAST:event_combateVolverActionPerformed
+
+    private boolean ataqueAliado(Ataque ataque) {
+        muestraAtaqueAliado.setText("Has usado " + ataque);
         disableButton();
         Acciones.atacar(ataque, pokeñonAleatorioRival, aliado);
         saludRival.setText("" + pokeñonAleatorioRival.getSalud());
-        if (pokeñonAleatorioRival.getSalud()==0) {
+        if (pokeñonAleatorioRival.getSalud() == 0) {
             personaje.getPokeñons().add(pokeñonAleatorioRival);
             saludIsZero();
             pokeñonAleatorioRival.setSalud(70);
+            muestraAtaque.setText("");
             return true;
         }
         return false;
     }
-    public void ataqueRival(){
-        timerCombate();
-        List<Ataques> listaAtaque = new ArrayList();
-        for (Ataques value : Ataques.values()) {
+
+    public void ataqueRival() {
+        List<Ataque> listaAtaque = new ArrayList();
+        for (Ataque value : Ataque.values()) {
             listaAtaque.add(value);
         }
-        int numeroAleatorio = (int)Math.round(Math.random()*(listaAtaque.size()-1));
+        int numeroAleatorio = (int) Math.round(Math.random() * (listaAtaque.size() - 1));
         Acciones.atacar(listaAtaque.get(numeroAleatorio), aliado, pokeñonAleatorioRival);
         miSalud.setText("" + aliado.getSalud());
-        if(aliado.getSalud()==0){
+        if (aliado.getSalud() == 0) {
             saludIsZero();
             return;
         }
         muestraAtaque.setText(pokeñonAleatorioRival.getNombre() + " ha usado " + listaAtaque.get(numeroAleatorio));
-        enableButton();    
+        enableButton();
     }
 
     public void enableButton() {
@@ -1411,23 +1498,20 @@ public class JFrame extends javax.swing.JFrame {
 
     private void saludIsZero() {
         muestraAtaqueAliado.setText("");
-        if (aliado.getSalud()==0) {
-            combateTerminado.setVisible(true);
-            mensajeCombate.setText(pokeñonAleatorioRival.getNombre() + " te ha vencido");
+        if (aliado.getSalud() == 0) {
+            contenedor.setSelectedIndex(3);
         } else {
-            muestraAtaque.setText("Has ganado");
-            muestraAtaqueAliado.setText("Elige una Pokeball para capturar al Pokeñon");
+            muestraAtaque.setText("Elige una Pokeball para capturar al Pokeñon");
+            muestraAtaqueAliado.setText("Has ganado");
             bPokeball.setVisible(true);
             bSuperball.setVisible(true);
             bUltraball.setVisible(true);
         }
-        contenedor.setSelectedIndex(3);
-        muestraAtaque.setText("");
         enableButton();
         aliado.setSalud(70);
-        
+
     }
-    
+
     public class Action implements ActionListener {
 
         int i = 0;
@@ -1493,10 +1577,11 @@ public class JFrame extends javax.swing.JFrame {
     public javax.swing.JButton cargarPartida;
     public javax.swing.JButton charmander;
     public javax.swing.JPanel combate;
-    public javax.swing.JDialog combateTerminado;
+    public javax.swing.JButton combateVolver;
     public javax.swing.JTabbedPane contenedor;
     public javax.swing.JLayeredPane contenedorMapa;
     public javax.swing.JDialog dialogGuardar;
+    public javax.swing.JLabel encontradoTexto;
     public javax.swing.JDialog error;
     public javax.swing.JButton guardarPartida;
     public javax.swing.JButton hidrobomba;
@@ -1532,7 +1617,6 @@ public class JFrame extends javax.swing.JFrame {
     public javax.swing.JList<String> listaMochila;
     public javax.swing.JList<String> listaPoke;
     public javax.swing.JLabel mapa;
-    public javax.swing.JLabel mensajeCombate;
     public javax.swing.JLabel mensajeError;
     public javax.swing.JLabel miPokeñon;
     public javax.swing.JLabel miSalud;

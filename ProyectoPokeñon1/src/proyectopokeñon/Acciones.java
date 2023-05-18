@@ -32,7 +32,7 @@ public class Acciones extends JFrame {
     int x;
     int y;
     
-    public static void atacar(Ataques ataque, Pokeñon otroPokeñon,Pokeñon miPokeñon) {
+    public static void atacar(Ataque ataque, Pokeñon otroPokeñon,Pokeñon miPokeñon) {
         double efectividad = 1.0;
         Tipo tipoAtaque = ataque.getTipo();
         Tipo tipoObjetivo = otroPokeñon.getTipo();
@@ -91,7 +91,7 @@ public class Acciones extends JFrame {
         personaje.getPokeñons().remove(indice);
     }
     
-    public static void AñadirObjetos(Personaje personaje, Objetos objeto){
+    public static void AñadirObjetos(Personaje personaje, Objeto objeto){
         if(personaje.getObjetos().size() < 16){
             personaje.getObjetos().add(objeto);    
         }
