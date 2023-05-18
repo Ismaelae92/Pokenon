@@ -62,7 +62,7 @@ public class Acciones extends JFrame {
         }
 
         efectividad = (int) Math.round(ataque.getFuerza()*efectividad);
-        otroPokeñon.setSalud(otroPokeñon.getSalud() - efectividad);
+        otroPokeñon.setSalud(otroPokeñon.getSalud() - efectividad / 2);
     }
     
     // Guarda la información del personaje en un archivo binario

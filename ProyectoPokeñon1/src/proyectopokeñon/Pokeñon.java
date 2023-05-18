@@ -4,13 +4,14 @@
  */
 package proyectopokeñon;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 /**
  *
  * @author Ismael
  */
-public enum Pokeñon {
+public enum Pokeñon implements Serializable {
     PIKACHU("Pikachu", Tipo.ELECTRICO, 50, 100, "src\\imagenes\\bulbasur.png", "src\\imagenes\\bulbasur2.png"),
     CHARIZARD("Charizard", Tipo.FUEGO, 80, 120, "src\\imagenes\\bulbasur.png", "src\\imagenes\\bulbasur2.png"),
     BLASTOISE("Blastoise", Tipo.AGUA, 90, 150, "src\\imagenes\\bulbasur.png", "src\\imagenes\\bulbasur2.png"),
@@ -55,6 +56,9 @@ public enum Pokeñon {
         this.salud = salud;
         this.url = url;
         this.urlAliado = urlAliado;
+    }
+    
+    Pokeñon(){ 
     }
 
     public String getNombre() {

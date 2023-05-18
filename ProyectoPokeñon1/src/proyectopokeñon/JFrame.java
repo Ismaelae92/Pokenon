@@ -49,6 +49,10 @@ public class JFrame extends javax.swing.JFrame {
     public List<Pokeñon> pokeñonRandom;
     private Pokeñon aliado;
     private Pokeñon pokeñonAleatorioRival;
+    ImageIcon der = new ImageIcon("src\\imagenes\\der.png");
+    ImageIcon izq = new ImageIcon("src\\imagenes\\izq.png");
+    ImageIcon arr = new ImageIcon("src\\imagenes\\adelante.png");
+    ImageIcon abj = new ImageIcon("src\\imagenes\\atras.png");
 
     public JFrame() {
         initComponents();
@@ -96,8 +100,33 @@ public class JFrame extends javax.swing.JFrame {
         combateTerminado.setVisible(false);
         combateTerminado.setLocationRelativeTo(this);
         combateTerminado.setSize(600, 600);
+        personaje.getObjetos().add(Objetos.MAXPOCION);
     }
 
+    private void introducirAudio() {
+        File soundFile = new File("src\\audio\\intro.wav");
+        try {
+            audioInputStream = AudioSystem.getAudioInputStream(soundFile);
+        } catch (UnsupportedAudioFileException ue) {
+            System.out.println("Archivo incorrecto");
+        } catch (IOException e) {
+            System.out.println("Error inesperado");
+        }
+        try {
+            clip = AudioSystem.getClip();
+            clip.open(audioInputStream);
+            clip.start();
+            clip.loop(Clip.LOOP_CONTINUOUSLY); //Para el el audio se ejecute en bucle
+            FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+            float dB = (float) (Math.log10(0.5) * 35.0);
+            gainControl.setValue(dB);
+        } catch (LineUnavailableException l) {
+            System.out.println("Error en el audio");
+        } catch (IOException e) {
+            System.out.println("err");
+        }
+    }
+    
     public void setVisible(boolean b) {
         super.setVisible(b);
         if (b) {
@@ -147,7 +176,7 @@ public class JFrame extends javax.swing.JFrame {
     public void encuentraObjeto() {
         // Detectar si el botón está cerca de una coordenada
         double posicionObjetos = Math.sqrt(Math.pow(x - (int) (Math.random() * (1516)), 2) + Math.pow(y - (int) (Math.random() * (764)), 2));
-        if (posicionObjetos < 15) { // Si la distancia es menor que 100, mostrar el diálogo EncuentraObjeto
+        if (posicionObjetos < 30) { // Si la distancia es menor que 100, mostrar el diálogo EncuentraObjeto
             stopMoving();
             EncuentraObjeto.setVisible(true);
             Objetos objetoAleatorio = objetosRandom.get((int) (Math.random() * objetosRandom.size())); // Obtener el objeto correspondiente al índice aleatorio
@@ -161,7 +190,7 @@ public class JFrame extends javax.swing.JFrame {
     public void encuentraPokeñon() {
         // Detectar si el botón está cerca de una coordenada
         double posicionPokeñon = Math.sqrt(Math.pow(x - (int) (Math.random() * (1516)), 2) + Math.pow(y - (int) (Math.random() * (764)), 2));
-        if (posicionPokeñon < 15) { // Si la distancia es menor que 100, mostrar el diálogo EncuentraObjeto
+        if (posicionPokeñon < 30) { // Si la distancia es menor que 100, mostrar el diálogo EncuentraObjeto
             stopMoving();
             contenedor.setSelectedIndex(5);
             combate();
@@ -184,7 +213,7 @@ public class JFrame extends javax.swing.JFrame {
     
     public void timerCombate() {
         try {
-            Thread.sleep(1000);
+            Thread.sleep(2000);
         } catch (InterruptedException ex) {
             ex.printStackTrace();
         }
@@ -282,6 +311,9 @@ public class JFrame extends javax.swing.JFrame {
         miSalud = new javax.swing.JLabel();
         muestraAtaqueAliado = new javax.swing.JLabel();
         muestraAtaque = new javax.swing.JLabel();
+        bPokeball = new javax.swing.JButton();
+        bSuperball = new javax.swing.JButton();
+        bUltraball = new javax.swing.JButton();
 
         dialogGuardar.setModal(true);
         dialogGuardar.getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -864,16 +896,31 @@ public class JFrame extends javax.swing.JFrame {
         hidrobomba.setBackground(new java.awt.Color(0, 204, 255));
         hidrobomba.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         hidrobomba.setText("HIDROBOMBA");
+        hidrobomba.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                hidrobombaActionPerformed(evt);
+            }
+        });
         combate.add(hidrobomba, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 680, -1, -1));
 
         latigocepa.setBackground(new java.awt.Color(0, 204, 102));
         latigocepa.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         latigocepa.setText("LATIGO CEPA");
+        latigocepa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                latigocepaActionPerformed(evt);
+            }
+        });
         combate.add(latigocepa, new org.netbeans.lib.awtextra.AbsoluteConstraints(1220, 680, -1, -1));
 
         impactrueno.setBackground(new java.awt.Color(255, 255, 0));
         impactrueno.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         impactrueno.setText("IMPACTRUENO");
+        impactrueno.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                impactruenoActionPerformed(evt);
+            }
+        });
         combate.add(impactrueno, new org.netbeans.lib.awtextra.AbsoluteConstraints(1090, 680, -1, -1));
 
         placaje.setBackground(new java.awt.Color(204, 204, 204));
@@ -889,6 +936,11 @@ public class JFrame extends javax.swing.JFrame {
         lanzallamas.setBackground(new java.awt.Color(255, 51, 51));
         lanzallamas.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         lanzallamas.setText("LANZALLAMAS");
+        lanzallamas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                lanzallamasActionPerformed(evt);
+            }
+        });
         combate.add(lanzallamas, new org.netbeans.lib.awtextra.AbsoluteConstraints(950, 680, 122, -1));
 
         saludRival.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
@@ -905,7 +957,21 @@ public class JFrame extends javax.swing.JFrame {
 
         muestraAtaque.setBackground(new java.awt.Color(255, 255, 255));
         muestraAtaque.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        combate.add(muestraAtaque, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 100, 763, 37));
+        combate.add(muestraAtaque, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 120, 763, 37));
+
+        bPokeball.setText("Pokeball");
+        bPokeball.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bPokeballActionPerformed(evt);
+            }
+        });
+        combate.add(bPokeball, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 230, -1, -1));
+
+        bSuperball.setText("Superball");
+        combate.add(bSuperball, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 230, -1, -1));
+
+        bUltraball.setText("Ultraball");
+        combate.add(bUltraball, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 230, -1, -1));
 
         contenedor.addTab("Pelea", combate);
 
@@ -945,18 +1011,23 @@ public class JFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_IconoEntrenadorKeyReleased
 
     private void IconoEntrenadorKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_IconoEntrenadorKeyPressed
+        
         switch (evt.getKeyCode()) {
             case KeyEvent.VK_UP:
                 startMoving(0, -1);
+                IconoEntrenador.setIcon(arr);
                 break;
             case KeyEvent.VK_DOWN:
                 startMoving(0, 1);
+                IconoEntrenador.setIcon(abj);
                 break;
             case KeyEvent.VK_LEFT:
                 startMoving(-1, 0);
+                IconoEntrenador.setIcon(izq);
                 break;
             case KeyEvent.VK_RIGHT:
                 startMoving(1, 0);
+                IconoEntrenador.setIcon(der);
                 break;
             default:
                 break;
@@ -1125,27 +1196,7 @@ public class JFrame extends javax.swing.JFrame {
 
     private void barraStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_barraStateChanged
         if (barra.getValue() == 99) {
-            File soundFile = new File("src\\audio\\intro.wav");
-            try {
-                audioInputStream = AudioSystem.getAudioInputStream(soundFile);
-            } catch (UnsupportedAudioFileException ue) {
-                System.out.println("Archivo incorrecto");
-            } catch (IOException e) {
-                System.out.println("Error inesperado");
-            }
-            try {
-                clip = AudioSystem.getClip();
-                clip.open(audioInputStream);
-                clip.start();
-                clip.loop(Clip.LOOP_CONTINUOUSLY); //Para el el audio se ejecute en bucle
-                FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-                float dB = (float) (Math.log10(0.5) * 35.0);
-                gainControl.setValue(dB);
-            } catch (LineUnavailableException l) {
-                System.out.println("Error en el audio");
-            } catch (IOException e) {
-                System.out.println("err");
-            }
+            introducirAudio();
         }
     }//GEN-LAST:event_barraStateChanged
 
@@ -1284,21 +1335,53 @@ public class JFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_soltarPokeñonActionPerformed
 
     private void placajeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_placajeActionPerformed
-        muestraAtaque.setText("Has usado Placaje");
+        if(ataqueAliado(Ataques.GOLPE_NORMAL))return; 
+        ataqueRival();
+    }//GEN-LAST:event_placajeActionPerformed
+
+    private void hidrobombaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hidrobombaActionPerformed
+        if(ataqueAliado(Ataques.HIDROBOMBA))return; 
+        ataqueRival();
+    }//GEN-LAST:event_hidrobombaActionPerformed
+
+    private void lanzallamasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lanzallamasActionPerformed
+        if(ataqueAliado(Ataques.LANZALLAMAS))return; 
+        ataqueRival();
+    }//GEN-LAST:event_lanzallamasActionPerformed
+
+    private void impactruenoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_impactruenoActionPerformed
+        if(ataqueAliado(Ataques.IMPACTRUENO))return; 
+        ataqueRival();
+    }//GEN-LAST:event_impactruenoActionPerformed
+
+    private void latigocepaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_latigocepaActionPerformed
+        if(ataqueAliado(Ataques.LATIGO_CEPA))return; 
+        ataqueRival();
+    }//GEN-LAST:event_latigocepaActionPerformed
+
+    private void bPokeballActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bPokeballActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_bPokeballActionPerformed
+
+    private boolean ataqueAliado(Ataques ataque) {
+        muestraAtaqueAliado.setText("Has usado "+ ataque);
         disableButton();
-        Acciones.atacar(Ataques.GOLPE_NORMAL, pokeñonAleatorioRival, aliado);
+        Acciones.atacar(ataque, pokeñonAleatorioRival, aliado);
         saludRival.setText("" + pokeñonAleatorioRival.getSalud());
-        if(pokeñonAleatorioRival.getSalud()==0){
+        if (pokeñonAleatorioRival.getSalud()==0) {
             personaje.getPokeñons().add(pokeñonAleatorioRival);
             saludIsZero();
             pokeñonAleatorioRival.setSalud(70);
-            return;
+            return true;
         }
+        return false;
+    }
+    public void ataqueRival(){
+        timerCombate();
         List<Ataques> listaAtaque = new ArrayList();
         for (Ataques value : Ataques.values()) {
             listaAtaque.add(value);
         }
-        timerCombate();
         int numeroAleatorio = (int)Math.round(Math.random()*(listaAtaque.size()-1));
         Acciones.atacar(listaAtaque.get(numeroAleatorio), aliado, pokeñonAleatorioRival);
         miSalud.setText("" + aliado.getSalud());
@@ -1307,8 +1390,8 @@ public class JFrame extends javax.swing.JFrame {
             return;
         }
         muestraAtaque.setText(pokeñonAleatorioRival.getNombre() + " ha usado " + listaAtaque.get(numeroAleatorio));
-        enableButton();
-    }//GEN-LAST:event_placajeActionPerformed
+        enableButton();    
+    }
 
     public void enableButton() {
         placaje.setEnabled(true);
@@ -1327,12 +1410,16 @@ public class JFrame extends javax.swing.JFrame {
     }
 
     private void saludIsZero() {
+        muestraAtaqueAliado.setText("");
         if (aliado.getSalud()==0) {
             combateTerminado.setVisible(true);
             mensajeCombate.setText(pokeñonAleatorioRival.getNombre() + " te ha vencido");
         } else {
-            combateTerminado.setVisible(true);
-            mensajeCombate.setText("Has vencido");
+            muestraAtaque.setText("Has ganado");
+            muestraAtaqueAliado.setText("Elige una Pokeball para capturar al Pokeñon");
+            bPokeball.setVisible(true);
+            bSuperball.setVisible(true);
+            bUltraball.setVisible(true);
         }
         contenedor.setSelectedIndex(3);
         muestraAtaque.setText("");
@@ -1397,6 +1484,9 @@ public class JFrame extends javax.swing.JFrame {
     public javax.swing.JDialog EncuentraObjeto;
     public javax.swing.JComboBox<String> Filtro;
     public javax.swing.JButton IconoEntrenador;
+    public javax.swing.JButton bPokeball;
+    public javax.swing.JButton bSuperball;
+    public javax.swing.JButton bUltraball;
     public javax.swing.JProgressBar barra;
     public javax.swing.JButton bulbasaur;
     public javax.swing.JFileChooser cargarArchivo;
