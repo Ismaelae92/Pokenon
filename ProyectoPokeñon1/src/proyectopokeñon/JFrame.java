@@ -1426,7 +1426,7 @@ public class JFrame extends javax.swing.JFrame {
 
     private void bUltraballActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bUltraballActionPerformed
         for (Objeto objeto : personaje.getObjetos()) {
-            if(objeto==Objeto.SUPERBALL){
+            if(objeto==Objeto.ULTRABALL){
                 if (95 > ((int) Math.round((Math.random() + 1) * 50))) {
                     personaje.getPokeñons().add(pokeñonAleatorioRival);
                 }
@@ -1443,7 +1443,7 @@ public class JFrame extends javax.swing.JFrame {
     private void combateVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_combateVolverActionPerformed
         bPokeball.setVisible(false);
         bSuperball.setVisible(false);
-        bSuperball.setVisible(false);
+        bUltraball.setVisible(false);
         muestraAtaque.setText("");
         muestraAtaqueAliado.setText("");
         contenedor.setSelectedIndex(3);
