@@ -6,6 +6,7 @@ package proyectopokeñon;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -53,16 +54,13 @@ public class JFrame extends javax.swing.JFrame {
     ImageIcon izq = new ImageIcon("src\\imagenes\\izq.png");
     ImageIcon arr = new ImageIcon("src\\imagenes\\arriba.png");
     ImageIcon abj = new ImageIcon("src\\imagenes\\atras.png");
+    File soundFile;
+    File soundBattle;
 
     public JFrame() {
         initComponents();
         //Bloquea todas las pestañas
-        contenedor.setEnabledAt(0, false);
-        contenedor.setEnabledAt(1, false);
-        contenedor.setEnabledAt(2, false);
-        contenedor.setEnabledAt(3, false);
-        contenedor.setEnabledAt(4, false);
-        contenedor.setEnabledAt(5, false);
+        contenedor.setEnabled(false);
         //Para que habra la aplicacion a pantalla completa y maximizada
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         setSize(screenSize);
@@ -105,10 +103,9 @@ public class JFrame extends javax.swing.JFrame {
         EncuentraObjeto.setSize(438, 330);
     }
 
-    private void introducirAudio() {
-        File soundFile = new File("src\\audio\\intro.wav");
+    private void introducirAudio(File soundFile) {
         try {
-            audioInputStream = AudioSystem.getAudioInputStream(soundFile);
+          audioInputStream = AudioSystem.getAudioInputStream(soundFile);
         } catch (UnsupportedAudioFileException ue) {
             System.out.println("Archivo incorrecto");
         } catch (IOException e) {
@@ -178,7 +175,7 @@ public class JFrame extends javax.swing.JFrame {
     public void encuentraObjeto() {
         // Detectar si el botón está cerca de una coordenada
         double posicionObjetos = Math.sqrt(Math.pow(x - (int) (Math.random() * (1516)), 2) + Math.pow(y - (int) (Math.random() * (764)), 2));
-        if (posicionObjetos < 30) { // Si la distancia es menor que 100, mostrar el diálogo EncuentraObjeto
+        if (posicionObjetos < 40) { // Si la distancia es menor que 100, mostrar el diálogo EncuentraObjeto
             stopMoving();
             EncuentraObjeto.setVisible(true);
             Objeto objetoAleatorio = objetosRandom.get((int) (Math.random() * objetosRandom.size())); // Obtener el objeto correspondiente al índice aleatorio
@@ -193,7 +190,7 @@ public class JFrame extends javax.swing.JFrame {
     public void encuentraPokeñon() {
         // Detectar si el botón está cerca de una coordenada
         double posicionPokeñon = Math.sqrt(Math.pow(x - (int) (Math.random() * (1516)), 2) + Math.pow(y - (int) (Math.random() * (764)), 2));
-        if (posicionPokeñon < 20) { // Si la distancia es menor que 100, mostrar el diálogo EncuentraObjeto
+        if (posicionPokeñon < 25) { // Si la distancia es menor que 100, mostrar el diálogo EncuentraObjeto
             stopMoving();
             contenedor.setSelectedIndex(5);
             combate();
@@ -249,16 +246,20 @@ public class JFrame extends javax.swing.JFrame {
         encontradoTexto = new javax.swing.JLabel();
         contenedor = new javax.swing.JTabbedPane();
         inicio = new javax.swing.JPanel();
-        barra = new javax.swing.JProgressBar();
         porcentajeBarra = new javax.swing.JLabel();
+        barra = new javax.swing.JProgressBar();
+        jLabel13 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
         pMenu = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jPanel7 = new javax.swing.JPanel();
-        nuevaPartida = new javax.swing.JButton();
-        cargarPartida = new javax.swing.JButton();
         jSlider1 = new javax.swing.JSlider();
         jButton9 = new javax.swing.JButton();
         cargarArchivo = new javax.swing.JFileChooser();
+        nuevaPartida = new javax.swing.JButton();
+        cargarPartida = new javax.swing.JButton();
+        jLabel16 = new javax.swing.JLabel();
+        jLabel15 = new javax.swing.JLabel();
         pSeleccion = new javax.swing.JPanel();
         pikachu = new javax.swing.JButton();
         volverAlMenu3 = new javax.swing.JButton();
@@ -273,7 +274,7 @@ public class JFrame extends javax.swing.JFrame {
         irJuego = new javax.swing.JButton();
         jLabel11 = new javax.swing.JLabel();
         insertarUsuario = new javax.swing.JTextField();
-        jPanel1 = new javax.swing.JPanel();
+        jLabel17 = new javax.swing.JLabel();
         pJuego = new javax.swing.JPanel();
         contenedorMapa = new javax.swing.JLayeredPane();
         IconoEntrenador = new javax.swing.JButton();
@@ -295,11 +296,9 @@ public class JFrame extends javax.swing.JFrame {
         AscDesc = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
         listaPoke = new javax.swing.JList<>();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
         soltarPokeñon = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel19 = new javax.swing.JLabel();
         combate = new javax.swing.JPanel();
         miPokeñon = new javax.swing.JLabel();
         rival = new javax.swing.JLabel();
@@ -317,6 +316,7 @@ public class JFrame extends javax.swing.JFrame {
         bSuperball = new javax.swing.JButton();
         bUltraball = new javax.swing.JButton();
         combateVolver = new javax.swing.JButton();
+        jLabel6 = new javax.swing.JLabel();
 
         dialogGuardar.setModal(true);
         dialogGuardar.getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -365,7 +365,6 @@ public class JFrame extends javax.swing.JFrame {
         );
 
         EncuentraObjeto.setMinimumSize(new java.awt.Dimension(300, 400));
-        EncuentraObjeto.setPreferredSize(new java.awt.Dimension(500, 430));
         EncuentraObjeto.setResizable(false);
 
         objetoEncontrado.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -406,8 +405,15 @@ public class JFrame extends javax.swing.JFrame {
         contenedor.setAlignmentY(1.0F);
         contenedor.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         contenedor.setFocusable(false);
+        contenedor.setMaximumSize(new java.awt.Dimension(1080, 891));
+        contenedor.setMinimumSize(new java.awt.Dimension(1080, 891));
+        contenedor.setPreferredSize(new java.awt.Dimension(1080, 891));
 
         inicio.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        porcentajeBarra.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
+        porcentajeBarra.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        inicio.add(porcentajeBarra, new org.netbeans.lib.awtextra.AbsoluteConstraints(730, 320, 89, 53));
 
         barra.setBackground(new java.awt.Color(255, 255, 255));
         barra.setToolTipText("");
@@ -421,10 +427,14 @@ public class JFrame extends javax.swing.JFrame {
                 barraComponentShown(evt);
             }
         });
-        inicio.add(barra, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 230, 554, 49));
+        inicio.add(barra, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 470, 554, 49));
 
-        porcentajeBarra.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        inicio.add(porcentajeBarra, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 320, 89, 53));
+        jLabel13.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/2.png"))); // NOI18N
+        inicio.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 10, 540, 190));
+
+        jLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/video-games-red-Pok-mon-circle-light-lighting-122256-wallhere.com.jpg"))); // NOI18N
+        inicio.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(-190, -90, 1910, 820));
 
         contenedor.addTab("Inicio", inicio);
 
@@ -447,25 +457,6 @@ public class JFrame extends javax.swing.JFrame {
 
         jPanel7.setBackground(new java.awt.Color(255, 255, 255));
         jPanel7.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        nuevaPartida.setFont(new java.awt.Font("Segoe Print", 1, 24)); // NOI18N
-        nuevaPartida.setText("Nueva partida");
-        nuevaPartida.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                nuevaPartidaActionPerformed(evt);
-            }
-        });
-        jPanel7.add(nuevaPartida, new org.netbeans.lib.awtextra.AbsoluteConstraints(143, 67, 213, -1));
-
-        cargarPartida.setFont(new java.awt.Font("Segoe Print", 1, 24)); // NOI18N
-        cargarPartida.setText("Cargar partida");
-        cargarPartida.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cargarPartidaActionPerformed(evt);
-            }
-        });
-        jPanel7.add(cargarPartida, new org.netbeans.lib.awtextra.AbsoluteConstraints(143, 177, -1, -1));
-
         pMenu.add(jPanel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(217, 83, -1, -1));
 
         jSlider1.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -478,22 +469,49 @@ public class JFrame extends javax.swing.JFrame {
                 jSlider1PropertyChange(evt);
             }
         });
-        pMenu.add(jSlider1, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 610, -1, -1));
+        pMenu.add(jSlider1, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 710, 220, 40));
 
+        jButton9.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         jButton9.setText("Detener");
         jButton9.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton9ActionPerformed(evt);
             }
         });
-        pMenu.add(jButton9, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 610, -1, -1));
+        pMenu.add(jButton9, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 710, 140, 40));
 
         cargarArchivo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cargarArchivoActionPerformed(evt);
             }
         });
-        pMenu.add(cargarArchivo, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 70, -1, -1));
+        pMenu.add(cargarArchivo, new org.netbeans.lib.awtextra.AbsoluteConstraints(785, 230, 730, 520));
+
+        nuevaPartida.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
+        nuevaPartida.setText("Nueva partida");
+        nuevaPartida.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nuevaPartidaActionPerformed(evt);
+            }
+        });
+        pMenu.add(nuevaPartida, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 200, 220, 70));
+
+        cargarPartida.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
+        cargarPartida.setText("Cargar partida");
+        cargarPartida.setPreferredSize(new java.awt.Dimension(189, 35));
+        cargarPartida.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cargarPartidaActionPerformed(evt);
+            }
+        });
+        pMenu.add(cargarPartida, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 320, 220, 70));
+
+        jLabel16.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/2.png"))); // NOI18N
+        jLabel16.setText("jLabel16");
+        pMenu.add(jLabel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 0, 550, 180));
+
+        jLabel15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/14729-pokemon.jpg"))); // NOI18N
+        pMenu.add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1640, 800));
 
         contenedor.addTab("Menú", pMenu);
 
@@ -521,7 +539,7 @@ public class JFrame extends javax.swing.JFrame {
                 pikachuActionPerformed(evt);
             }
         });
-        pSeleccion.add(pikachu, new org.netbeans.lib.awtextra.AbsoluteConstraints(334, 191, -1, -1));
+        pSeleccion.add(pikachu, new org.netbeans.lib.awtextra.AbsoluteConstraints(345, 424, -1, -1));
 
         volverAlMenu3.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         volverAlMenu3.setText("VOLVER AL MENU");
@@ -531,7 +549,7 @@ public class JFrame extends javax.swing.JFrame {
                 volverAlMenu3ActionPerformed(evt);
             }
         });
-        pSeleccion.add(volverAlMenu3, new org.netbeans.lib.awtextra.AbsoluteConstraints(24, 646, 244, 66));
+        pSeleccion.add(volverAlMenu3, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 684, 244, 66));
 
         bulbasaur.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/bulbasur.png"))); // NOI18N
         bulbasaur.setContentAreaFilled(false);
@@ -548,7 +566,7 @@ public class JFrame extends javax.swing.JFrame {
                 bulbasaurActionPerformed(evt);
             }
         });
-        pSeleccion.add(bulbasaur, new org.netbeans.lib.awtextra.AbsoluteConstraints(544, 191, 125, 131));
+        pSeleccion.add(bulbasaur, new org.netbeans.lib.awtextra.AbsoluteConstraints(555, 424, 125, 131));
 
         charmander.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/charmander.png"))); // NOI18N
         charmander.setContentAreaFilled(false);
@@ -565,7 +583,7 @@ public class JFrame extends javax.swing.JFrame {
                 charmanderActionPerformed(evt);
             }
         });
-        pSeleccion.add(charmander, new org.netbeans.lib.awtextra.AbsoluteConstraints(774, 191, 125, 131));
+        pSeleccion.add(charmander, new org.netbeans.lib.awtextra.AbsoluteConstraints(785, 424, 125, 131));
 
         squirtle.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/squirtle.png"))); // NOI18N
         squirtle.setContentAreaFilled(false);
@@ -582,17 +600,17 @@ public class JFrame extends javax.swing.JFrame {
                 squirtleActionPerformed(evt);
             }
         });
-        pSeleccion.add(squirtle, new org.netbeans.lib.awtextra.AbsoluteConstraints(994, 191, 125, 131));
+        pSeleccion.add(squirtle, new org.netbeans.lib.awtextra.AbsoluteConstraints(1005, 424, 125, 131));
 
         nPikachu.setBackground(new java.awt.Color(255, 255, 255));
         nPikachu.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         nPikachu.setText("PIKACHU");
-        pSeleccion.add(nPikachu, new org.netbeans.lib.awtextra.AbsoluteConstraints(334, 349, -1, -1));
+        pSeleccion.add(nPikachu, new org.netbeans.lib.awtextra.AbsoluteConstraints(345, 582, -1, -1));
 
         nBulbasur.setBackground(new java.awt.Color(255, 255, 255));
         nBulbasur.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         nBulbasur.setText("BULBASAUR");
-        pSeleccion.add(nBulbasur, new org.netbeans.lib.awtextra.AbsoluteConstraints(543, 349, -1, -1));
+        pSeleccion.add(nBulbasur, new org.netbeans.lib.awtextra.AbsoluteConstraints(562, 582, -1, -1));
 
         nSquirtle.setBackground(new java.awt.Color(255, 255, 255));
         nSquirtle.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
@@ -602,16 +620,16 @@ public class JFrame extends javax.swing.JFrame {
                 nSquirtleMouseClicked(evt);
             }
         });
-        pSeleccion.add(nSquirtle, new org.netbeans.lib.awtextra.AbsoluteConstraints(1016, 349, -1, -1));
+        pSeleccion.add(nSquirtle, new org.netbeans.lib.awtextra.AbsoluteConstraints(1027, 582, -1, -1));
 
         nCharmander.setBackground(new java.awt.Color(255, 255, 255));
         nCharmander.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         nCharmander.setText("CHARMANDER");
-        pSeleccion.add(nCharmander, new org.netbeans.lib.awtextra.AbsoluteConstraints(774, 349, -1, -1));
+        pSeleccion.add(nCharmander, new org.netbeans.lib.awtextra.AbsoluteConstraints(785, 582, -1, -1));
 
-        jLabel12.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel12.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
         jLabel12.setText("Elige un Pokeñon");
-        pSeleccion.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(633, 84, -1, 66));
+        pSeleccion.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(574, 340, -1, 66));
 
         irJuego.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         irJuego.setText("CONTINUAR");
@@ -620,11 +638,11 @@ public class JFrame extends javax.swing.JFrame {
                 irJuegoActionPerformed(evt);
             }
         });
-        pSeleccion.add(irJuego, new org.netbeans.lib.awtextra.AbsoluteConstraints(1080, 640, 244, 66));
+        pSeleccion.add(irJuego, new org.netbeans.lib.awtextra.AbsoluteConstraints(1120, 684, 244, 66));
 
         jLabel11.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel11.setText("Nombre entrenador:");
-        pSeleccion.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(591, 404, -1, -1));
+        pSeleccion.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(574, 212, -1, -1));
 
         insertarUsuario.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         insertarUsuario.addActionListener(new java.awt.event.ActionListener() {
@@ -637,20 +655,11 @@ public class JFrame extends javax.swing.JFrame {
                 insertarUsuarioKeyPressed(evt);
             }
         });
-        pSeleccion.add(insertarUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(591, 437, 295, 58));
+        pSeleccion.add(insertarUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(574, 255, 295, 58));
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-
-        pSeleccion.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1506, 39, -1, -1));
+        jLabel17.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/pokeñonchico.png"))); // NOI18N
+        pSeleccion.add(jLabel17, new org.netbeans.lib.awtextra.AbsoluteConstraints(542, 6, -1, 150));
 
         contenedor.addTab("Seleccionar", pSeleccion);
 
@@ -660,9 +669,8 @@ public class JFrame extends javax.swing.JFrame {
                 pJuegoKeyPressed(evt);
             }
         });
-        pJuego.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        IconoEntrenador.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/arriba.png"))); // NOI18N
+        IconoEntrenador.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/atras.png"))); // NOI18N
         IconoEntrenador.setContentAreaFilled(false);
         IconoEntrenador.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -679,7 +687,7 @@ public class JFrame extends javax.swing.JFrame {
         });
 
         irInventario.setBackground(new java.awt.Color(102, 102, 255));
-        irInventario.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        irInventario.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         irInventario.setForeground(new java.awt.Color(255, 255, 255));
         irInventario.setText("INVENTARIO");
         irInventario.setFocusable(false);
@@ -708,34 +716,42 @@ public class JFrame extends javax.swing.JFrame {
             .addGroup(contenedorMapaLayout.createSequentialGroup()
                 .addGroup(contenedorMapaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(contenedorMapaLayout.createSequentialGroup()
+                        .addGap(501, 501, 501)
+                        .addComponent(IconoEntrenador))
+                    .addGroup(contenedorMapaLayout.createSequentialGroup()
                         .addGap(25, 25, 25)
                         .addComponent(irInventario, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(contenedorMapaLayout.createSequentialGroup()
-                        .addGap(501, 501, 501)
-                        .addComponent(IconoEntrenador)))
-                .addContainerGap(1179, Short.MAX_VALUE))
-            .addGroup(contenedorMapaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(contenedorMapaLayout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(mapa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+                        .addContainerGap()
+                        .addComponent(mapa, javax.swing.GroupLayout.PREFERRED_SIZE, 1539, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(190, Short.MAX_VALUE))
         );
         contenedorMapaLayout.setVerticalGroup(
             contenedorMapaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(contenedorMapaLayout.createSequentialGroup()
-                .addGap(17, 17, 17)
-                .addComponent(irInventario, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(119, 119, 119)
-                .addComponent(IconoEntrenador)
-                .addContainerGap(562, Short.MAX_VALUE))
-            .addGroup(contenedorMapaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(contenedorMapaLayout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(mapa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+                .addGroup(contenedorMapaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(contenedorMapaLayout.createSequentialGroup()
+                        .addGap(178, 178, 178)
+                        .addComponent(IconoEntrenador))
+                    .addGroup(contenedorMapaLayout.createSequentialGroup()
+                        .addGap(17, 17, 17)
+                        .addComponent(irInventario, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(contenedorMapaLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(mapa, javax.swing.GroupLayout.PREFERRED_SIZE, 766, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(25, Short.MAX_VALUE))
         );
 
-        pJuego.add(contenedorMapa, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
+        javax.swing.GroupLayout pJuegoLayout = new javax.swing.GroupLayout(pJuego);
+        pJuego.setLayout(pJuegoLayout);
+        pJuegoLayout.setHorizontalGroup(
+            pJuegoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(contenedorMapa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
+        pJuegoLayout.setVerticalGroup(
+            pJuegoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(contenedorMapa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
 
         contenedor.addTab("Juego", pJuego);
 
@@ -746,49 +762,54 @@ public class JFrame extends javax.swing.JFrame {
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setText("Mochila");
-        jPanel2.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(233, 36, 194, 60));
+        jPanel2.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 40, 194, 60));
 
+        usar.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         usar.setText("Usar");
         usar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 usarActionPerformed(evt);
             }
         });
-        jPanel2.add(usar, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 670, 80, -1));
+        jPanel2.add(usar, new org.netbeans.lib.awtextra.AbsoluteConstraints(700, 460, 100, 30));
 
+        soltarObjeto.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         soltarObjeto.setText("Soltar");
         soltarObjeto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 soltarObjetoActionPerformed(evt);
             }
         });
-        jPanel2.add(soltarObjeto, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 670, 80, -1));
+        jPanel2.add(soltarObjeto, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 460, 110, 30));
 
+        jButton42.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jButton42.setText("Volver al juego");
         jButton42.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton42ActionPerformed(evt);
             }
         });
-        jPanel2.add(jButton42, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 80, -1, -1));
+        jPanel2.add(jButton42, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 60, 140, 40));
 
-        guardarPartida.setText("guardarPartida");
+        guardarPartida.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        guardarPartida.setText("Guardar partida");
         guardarPartida.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 guardarPartidaActionPerformed(evt);
             }
         });
-        jPanel2.add(guardarPartida, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 130, -1, -1));
+        jPanel2.add(guardarPartida, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 120, 140, 40));
 
         imagenPokeñon.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel2.add(imagenPokeñon, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 300, 150, 140));
+        jPanel2.add(imagenPokeñon, new org.netbeans.lib.awtextra.AbsoluteConstraints(800, 220, 150, 140));
 
         imagenMochila.setBackground(new java.awt.Color(255, 255, 255));
+        imagenMochila.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         imagenMochila.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/charmander.png"))); // NOI18N
-        jPanel2.add(imagenMochila, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 300, 140, 140));
+        jPanel2.add(imagenMochila, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 220, 150, 140));
 
         listaMochila.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         listaMochila.setModel(new javax.swing.AbstractListModel<String>() {
@@ -796,6 +817,7 @@ public class JFrame extends javax.swing.JFrame {
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
         });
+        listaMochila.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         listaMochila.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 listaMochilaFocusGained(evt);
@@ -806,12 +828,12 @@ public class JFrame extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(listaMochila);
 
-        jPanel2.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 120, 410, 490));
+        jPanel2.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 130, 410, 360));
 
-        jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel5.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel5.setText("Pokeñon");
-        jPanel2.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(1060, 50, 194, 60));
+        jPanel2.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(1070, 50, 194, 60));
 
         Filtro.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Filtro", "Nombre", "Tipo", "Fuerza asc", "Fuerza desc", "Salud asc", "Salud desc" }));
         Filtro.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -824,7 +846,7 @@ public class JFrame extends javax.swing.JFrame {
                 FiltroActionPerformed(evt);
             }
         });
-        jPanel2.add(Filtro, new org.netbeans.lib.awtextra.AbsoluteConstraints(960, 90, -1, -1));
+        jPanel2.add(Filtro, new org.netbeans.lib.awtextra.AbsoluteConstraints(960, 110, -1, 20));
 
         AscDesc.setText("Ascendente");
         AscDesc.addActionListener(new java.awt.event.ActionListener() {
@@ -832,7 +854,7 @@ public class JFrame extends javax.swing.JFrame {
                 AscDescActionPerformed(evt);
             }
         });
-        jPanel2.add(AscDesc, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 80, -1, -1));
+        jPanel2.add(AscDesc, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 100, 100, -1));
 
         listaPoke.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         listaPoke.setModel(new javax.swing.AbstractListModel<String>() {
@@ -850,45 +872,39 @@ public class JFrame extends javax.swing.JFrame {
         });
         jScrollPane4.setViewportView(listaPoke);
 
-        jPanel2.add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(960, 140, 410, 480));
+        jPanel2.add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(960, 140, 410, 350));
 
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setText("Nombre");
-        jPanel2.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(950, 120, 90, 20));
-
-        jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel6.setText("Tipo");
-        jPanel2.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(1060, 120, 90, 20));
-
-        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel7.setText("Fuerza");
-        jPanel2.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(1180, 120, 90, 20));
-
-        jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel8.setText("Salud");
-        jPanel2.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(1280, 120, 90, 20));
-
+        soltarPokeñon.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         soltarPokeñon.setText("Soltar");
         soltarPokeñon.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 soltarPokeñonActionPerformed(evt);
             }
         });
-        jPanel2.add(soltarPokeñon, new org.netbeans.lib.awtextra.AbsoluteConstraints(1120, 670, -1, -1));
+        jPanel2.add(soltarPokeñon, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 460, 100, 30));
+
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/2.png"))); // NOI18N
+        jLabel3.setText("jLabel3");
+        jPanel2.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(870, 540, 570, 230));
+
+        jLabel19.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel19.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/3 (2).jpg"))); // NOI18N
+        jPanel2.add(jLabel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(-20, -310, 1500, 1130));
 
         pInventario.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1490, 800));
 
         contenedor.addTab("Inventario", pInventario);
 
-        combate.setBackground(new java.awt.Color(255, 255, 255));
+        combate.setBackground(new java.awt.Color(51, 51, 51));
         combate.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-        combate.add(miPokeñon, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 610, 150, 90));
-        combate.add(rival, new org.netbeans.lib.awtextra.AbsoluteConstraints(1120, 110, 160, 133));
+        combate.add(miPokeñon, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 350, 150, 130));
+        combate.add(rival, new org.netbeans.lib.awtextra.AbsoluteConstraints(1160, 340, 160, 133));
 
         jLabel14.setFont(new java.awt.Font("Segoe UI", 1, 70)); // NOI18N
+        jLabel14.setForeground(new java.awt.Color(255, 255, 255));
         jLabel14.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel14.setText("VS");
-        combate.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 390, 190, 62));
+        combate.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 380, 110, 62));
 
         hidrobomba.setBackground(new java.awt.Color(0, 204, 255));
         hidrobomba.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -898,7 +914,7 @@ public class JFrame extends javax.swing.JFrame {
                 hidrobombaActionPerformed(evt);
             }
         });
-        combate.add(hidrobomba, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 680, -1, -1));
+        combate.add(hidrobomba, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 640, 130, 40));
 
         latigocepa.setBackground(new java.awt.Color(0, 204, 102));
         latigocepa.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -908,7 +924,7 @@ public class JFrame extends javax.swing.JFrame {
                 latigocepaActionPerformed(evt);
             }
         });
-        combate.add(latigocepa, new org.netbeans.lib.awtextra.AbsoluteConstraints(1220, 680, -1, -1));
+        combate.add(latigocepa, new org.netbeans.lib.awtextra.AbsoluteConstraints(950, 640, 130, 40));
 
         impactrueno.setBackground(new java.awt.Color(255, 255, 0));
         impactrueno.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -918,7 +934,7 @@ public class JFrame extends javax.swing.JFrame {
                 impactruenoActionPerformed(evt);
             }
         });
-        combate.add(impactrueno, new org.netbeans.lib.awtextra.AbsoluteConstraints(1090, 680, -1, -1));
+        combate.add(impactrueno, new org.netbeans.lib.awtextra.AbsoluteConstraints(810, 640, 130, 40));
 
         placaje.setBackground(new java.awt.Color(204, 204, 204));
         placaje.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -928,7 +944,7 @@ public class JFrame extends javax.swing.JFrame {
                 placajeActionPerformed(evt);
             }
         });
-        combate.add(placaje, new org.netbeans.lib.awtextra.AbsoluteConstraints(700, 680, 110, -1));
+        combate.add(placaje, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 640, 130, 40));
 
         lanzallamas.setBackground(new java.awt.Color(255, 51, 51));
         lanzallamas.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -938,25 +954,29 @@ public class JFrame extends javax.swing.JFrame {
                 lanzallamasActionPerformed(evt);
             }
         });
-        combate.add(lanzallamas, new org.netbeans.lib.awtextra.AbsoluteConstraints(950, 680, 122, -1));
+        combate.add(lanzallamas, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 640, 130, 40));
 
-        saludRival.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        saludRival.setText("vida rival");
-        combate.add(saludRival, new org.netbeans.lib.awtextra.AbsoluteConstraints(800, 330, 105, 50));
+        saludRival.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
+        saludRival.setForeground(new java.awt.Color(255, 255, 255));
+        saludRival.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        combate.add(saludRival, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 390, 105, 50));
 
-        miSalud.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        miSalud.setText("mi vida");
-        combate.add(miSalud, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 460, 105, 50));
+        miSalud.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
+        miSalud.setForeground(new java.awt.Color(255, 255, 255));
+        miSalud.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        combate.add(miSalud, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 390, 105, 50));
 
         muestraAtaqueAliado.setBackground(new java.awt.Color(255, 255, 255));
-        muestraAtaqueAliado.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        muestraAtaqueAliado.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        combate.add(muestraAtaqueAliado, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 590, 763, 37));
+        muestraAtaqueAliado.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
+        muestraAtaqueAliado.setForeground(new java.awt.Color(255, 255, 255));
+        muestraAtaqueAliado.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        combate.add(muestraAtaqueAliado, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 570, 510, 37));
 
         muestraAtaque.setBackground(new java.awt.Color(255, 255, 255));
-        muestraAtaque.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        muestraAtaque.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        combate.add(muestraAtaque, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 100, 763, 37));
+        muestraAtaque.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
+        muestraAtaque.setForeground(new java.awt.Color(255, 255, 255));
+        muestraAtaque.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        combate.add(muestraAtaque, new org.netbeans.lib.awtextra.AbsoluteConstraints(950, 570, 490, 37));
 
         bPokeball.setText("Pokeball");
         bPokeball.addActionListener(new java.awt.event.ActionListener() {
@@ -964,7 +984,7 @@ public class JFrame extends javax.swing.JFrame {
                 bPokeballActionPerformed(evt);
             }
         });
-        combate.add(bPokeball, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 230, -1, -1));
+        combate.add(bPokeball, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 570, 110, 40));
 
         bSuperball.setText("Superball");
         bSuperball.addActionListener(new java.awt.event.ActionListener() {
@@ -972,7 +992,7 @@ public class JFrame extends javax.swing.JFrame {
                 bSuperballActionPerformed(evt);
             }
         });
-        combate.add(bSuperball, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 230, -1, -1));
+        combate.add(bSuperball, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 570, 130, 40));
 
         bUltraball.setText("Ultraball");
         bUltraball.addActionListener(new java.awt.event.ActionListener() {
@@ -980,7 +1000,7 @@ public class JFrame extends javax.swing.JFrame {
                 bUltraballActionPerformed(evt);
             }
         });
-        combate.add(bUltraball, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 230, -1, -1));
+        combate.add(bUltraball, new org.netbeans.lib.awtextra.AbsoluteConstraints(810, 570, 120, 40));
 
         combateVolver.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         combateVolver.setText("Volver al juego");
@@ -989,7 +1009,11 @@ public class JFrame extends javax.swing.JFrame {
                 combateVolverActionPerformed(evt);
             }
         });
-        combate.add(combateVolver, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 430, -1, -1));
+        combate.add(combateVolver, new org.netbeans.lib.awtextra.AbsoluteConstraints(1240, 640, 150, 40));
+
+        jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/2.png"))); // NOI18N
+        combate.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 0, 550, 190));
 
         contenedor.addTab("Pelea", combate);
 
@@ -1217,8 +1241,9 @@ public class JFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_irInventarioActionPerformed
 
     private void barraStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_barraStateChanged
+        soundFile = new File("src\\audio\\intro.wav");
         if (barra.getValue() == 99) {
-            introducirAudio();
+            introducirAudio(soundFile);
         }
     }//GEN-LAST:event_barraStateChanged
 
@@ -1392,14 +1417,16 @@ public class JFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_latigocepaActionPerformed
 
     private void bPokeballActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bPokeballActionPerformed
-        for (Objeto objeto : personaje.getObjetos()) {
+        bSuperball.setVisible(false);
+        bUltraball.setVisible(false);
+        boolean encontrado = false;
+        for (int i = 0; i<personaje.getObjetos().size() && !encontrado;i++) {
+            Objeto objeto = personaje.getObjetos().get(i);
             if(objeto==Objeto.POKEBALL){
                 if (50 > ((int) Math.round((Math.random() + 1) * 50))) {
+                    encontrado = true;
                     personaje.getPokeñons().add(pokeñonAleatorioRival);
                 }
-                bPokeball.setVisible(false);
-                bSuperball.setVisible(false);
-                bSuperball.setVisible(false);
                 contenedor.setSelectedIndex(3);
             } else {
                 muestraAtaque.setText("No tienes pokeballs");
@@ -1409,33 +1436,37 @@ public class JFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_bPokeballActionPerformed
 
     private void bSuperballActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bSuperballActionPerformed
-        for (Objeto objeto : personaje.getObjetos()) {
-            if(objeto==Objeto.SUPERBALL){
+        bPokeball.setVisible(false);
+        bUltraball.setVisible(false);
+        boolean encontrado = false;
+        for (int i = 0; i<personaje.getObjetos().size() && !encontrado;i++) {
+            Objeto objeto = personaje.getObjetos().get(i);
+            if(objeto==Objeto.POKEBALL){
                 if (75 > ((int) Math.round((Math.random() + 1) * 50))) {
+                    encontrado = true;
                     personaje.getPokeñons().add(pokeñonAleatorioRival);
                 }
-                bPokeball.setVisible(false);
-                bSuperball.setVisible(false);
-                bSuperball.setVisible(false);
                 contenedor.setSelectedIndex(3);
             } else {
-                muestraAtaque.setText("No tienes superballs");
+                muestraAtaque.setText("No tienes pokeballs");
             }
         }
     }//GEN-LAST:event_bSuperballActionPerformed
 
     private void bUltraballActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bUltraballActionPerformed
-        for (Objeto objeto : personaje.getObjetos()) {
-            if(objeto==Objeto.ULTRABALL){
+        bPokeball.setVisible(false);
+        bSuperball.setVisible(false);
+        boolean encontrado = false;
+        for (int i = 0; i<personaje.getObjetos().size() && !encontrado;i++) {
+            Objeto objeto = personaje.getObjetos().get(i);
+            if(objeto==Objeto.POKEBALL){
                 if (95 > ((int) Math.round((Math.random() + 1) * 50))) {
+                    encontrado = true;
                     personaje.getPokeñons().add(pokeñonAleatorioRival);
                 }
-                bPokeball.setVisible(false);
-                bSuperball.setVisible(false);
-                bSuperball.setVisible(false);
                 contenedor.setSelectedIndex(3);
             } else {
-                muestraAtaque.setText("No tienes ultraballs");
+                muestraAtaque.setText("No tienes pokeballs");
             }
         }
     }//GEN-LAST:event_bUltraballActionPerformed
@@ -1455,7 +1486,6 @@ public class JFrame extends javax.swing.JFrame {
         Acciones.atacar(ataque, pokeñonAleatorioRival, aliado);
         saludRival.setText("" + pokeñonAleatorioRival.getSalud());
         if (pokeñonAleatorioRival.getSalud() == 0) {
-            personaje.getPokeñons().add(pokeñonAleatorioRival);
             saludIsZero();
             pokeñonAleatorioRival.setSalud(70);
             muestraAtaque.setText("");
@@ -1506,6 +1536,7 @@ public class JFrame extends javax.swing.JFrame {
             bPokeball.setVisible(true);
             bSuperball.setVisible(true);
             bUltraball.setVisible(true);
+            disableButton();
         }
         enableButton();
         aliado.setSalud(70);
@@ -1598,15 +1629,18 @@ public class JFrame extends javax.swing.JFrame {
     public javax.swing.JLabel jLabel10;
     public javax.swing.JLabel jLabel11;
     public javax.swing.JLabel jLabel12;
+    public javax.swing.JLabel jLabel13;
     public javax.swing.JLabel jLabel14;
+    public javax.swing.JLabel jLabel15;
+    public javax.swing.JLabel jLabel16;
+    public javax.swing.JLabel jLabel17;
+    public javax.swing.JLabel jLabel19;
     public javax.swing.JLabel jLabel2;
     public javax.swing.JLabel jLabel3;
     public javax.swing.JLabel jLabel4;
     public javax.swing.JLabel jLabel5;
     public javax.swing.JLabel jLabel6;
-    public javax.swing.JLabel jLabel7;
-    public javax.swing.JLabel jLabel8;
-    public javax.swing.JPanel jPanel1;
+    public javax.swing.JLabel jLabel9;
     public javax.swing.JPanel jPanel2;
     public javax.swing.JPanel jPanel7;
     public javax.swing.JScrollPane jScrollPane1;
