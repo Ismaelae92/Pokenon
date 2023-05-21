@@ -1,1 +1,0 @@
-proyectopokeñon.Tipo
